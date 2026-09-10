@@ -332,6 +332,67 @@ a{ color:inherit }
 .wcard h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.55rem; line-height:1.05; margin:0 0 .6rem }
 .wcard p{ margin:0; font-size:.9rem; color:var(--muted) }
 
+/* ── calendar ──────────────────────────────────────────
+   A vertical stack of days, each day a label beside its time slots.
+   Chosen over a grid of eight day-columns, which would have scrolled
+   sideways on every screen and been unreadable on a phone. */
+.cal{ display:grid; gap:.9rem; margin-bottom:1.8rem }
+.cal__day{
+  display:grid; grid-template-columns:minmax(140px,.28fr) 1fr; gap:1.2rem;
+  padding:1.4rem 1.5rem; border:1px solid var(--line); border-radius:16px;
+  background:linear-gradient(160deg,rgba(232,244,236,.045),rgba(232,244,236,.01));
+}
+.cal__head h3{
+  font-family:var(--display); font-weight:400; text-transform:uppercase;
+  font-size:1.25rem; line-height:1.05; margin:0 0 .5rem;
+}
+.cal__tag{
+  display:inline-block; padding:.18rem .55rem;
+  font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); border:1px solid rgba(79,217,155,.35); border-radius:99px;
+}
+.cal__slots{ margin:0; padding:0; list-style:none }
+.cal__slots li{
+  display:grid; grid-template-columns:4.6rem 1fr; gap:.9rem;
+  padding:.42rem 0; border-top:1px solid var(--line); font-size:.9rem;
+}
+.cal__slots li:first-child{ border-top:0; padding-top:0 }
+.cal__slots b{ color:var(--accent); font-variant-numeric:tabular-nums; font-weight:600 }
+.cal__slots span{ color:var(--muted) }
+
+/* ── events timeline ───────────────────────────────────── */
+.timeline{ margin:0 0 1.8rem; padding:0; list-style:none }
+.tl{
+  display:grid; grid-template-columns:5.5rem 1fr; gap:1.2rem;
+  padding:1.15rem 0 1.15rem .2rem;
+  border-top:1px solid var(--line); position:relative;
+}
+.tl:last-child{ border-bottom:1px solid var(--line) }
+.tl__when{ text-align:right }
+.tl__when b{
+  display:block; font-family:var(--display); font-weight:400;
+  font-size:1.35rem; line-height:1; color:var(--ink);
+}
+.tl__when span{ display:block; margin-top:.2rem; font-size:.7rem; color:var(--muted) }
+.tl__body h3{
+  font-family:var(--display); font-weight:400; text-transform:uppercase;
+  font-size:1.3rem; line-height:1.1; margin:0 0 .35rem;
+}
+.tl__where{ margin:0 0 .35rem; font-size:.78rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent) }
+.tl__body p{ margin:0; font-size:.9rem; color:var(--muted) }
+.tl__tag{
+  display:inline-block; vertical-align:middle; margin-left:.45rem;
+  padding:.16rem .5rem; font-family:var(--body); font-weight:600;
+  font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--night); background:var(--accent); border-radius:99px;
+}
+.tl__tag--past{ color:var(--muted); background:transparent; border:1px solid var(--line) }
+/* a passed event stays readable — dimmed, not hidden, so the run-up
+   still reads as a sequence rather than losing its early steps */
+.tl.is-past{ opacity:.5 }
+.tl.is-next .tl__when b{ color:var(--accent) }
+
 /* tiers */
 .tiers{ display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-bottom:1.8rem }
 .tier{

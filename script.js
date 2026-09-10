@@ -38,6 +38,59 @@ const CONFIG = {
   signupUrl:    "",                        // Google Form / Typeform URL
   contactEmail: "elisabeth.vandehout@insead.edu",
 
+  // ── run-up events ──────────────────────────────────────────────
+  // ISO dates. Anything in the past dims itself and the next one up is
+  // marked automatically, so this list never needs pruning by hand.
+  events: [
+    { date:"2026-10-08", title:"Info session",
+      where:"Fontainebleau campus",
+      note:"What the trip is, what it costs, and who is running it. Come with questions." },
+    { date:"2026-10-31", title:"Early-bird closes",
+      where:"",
+      note:"Deposit in by tonight to hold the lower price." },
+    { date:"2026-11-19", title:"Gear & kit night",
+      where:"Fontainebleau campus",
+      note:"Rental sizing, what to pack, and what not to buy new." },
+    { date:"2026-12-04", title:"Balance due",
+      where:"",
+      note:"Remaining payment. Spots not paid by this date go to the waiting list." },
+    { date:"2026-12-11", title:"Rooming groups posted",
+      where:"",
+      note:"Chalets and roommates confirmed. Swaps handled by the committee after this." },
+    { date:"2027-01-02", title:"Coaches leave",
+      where:"Fontainebleau, 06:00",
+      note:"Be early. They will not wait." },
+  ],
+
+  // ── the week itself ────────────────────────────────────────────
+  schedule: [
+    { day:"Sat 2 Jan", tag:"Travel", items:[
+      {t:"06:00", w:"Coaches leave Fontainebleau"},
+      {t:"13:00", w:"Lunch stop, somewhere in Burgundy"},
+      {t:"19:30", w:"Arrive, keys and chalet allocation"},
+      {t:"21:00", w:"Welcome dinner"} ]},
+    { day:"Sun 3 Jan", tag:"First lifts", items:[
+      {t:"08:00", w:"Breakfast, lift passes handed out"},
+      {t:"09:30", w:"Groups split by level; beginners to ski school"},
+      {t:"12:30", w:"Lunch on the mountain"},
+      {t:"16:30", w:"Lifts close"},
+      {t:"20:00", w:"Chalet dinner"} ]},
+    { day:"Mon 4 – Thu 7 Jan", tag:"Full days", items:[
+      {t:"08:00", w:"Breakfast"},
+      {t:"09:00", w:"Lifts open — full days on the snow"},
+      {t:"16:30", w:"Après at the bottom station"},
+      {t:"20:00", w:"Chalet dinner, then whatever happens next"} ]},
+    { day:"Fri 8 Jan", tag:"Summit + gala", items:[
+      {t:"09:00", w:"Last full day on the snow"},
+      {t:"14:00", w:"Cohort photo at the top station"},
+      {t:"16:30", w:"Lifts close, gear returned"},
+      {t:"20:30", w:"Gala dinner and closing night"} ]},
+    { day:"Sat 9 Jan", tag:"Home", items:[
+      {t:"08:00", w:"Breakfast, chalets emptied"},
+      {t:"09:30", w:"Coaches leave"},
+      {t:"22:00", w:"Back in Fontainebleau, roughly"} ]},
+  ],
+
   // ── hero footage ───────────────────────────────────────────────
   // Streamed from Wikimedia Commons (CC BY-SA 4.0, credited in the footer).
   // To self-host instead, drop the files in assets/ and point these there.
@@ -88,6 +141,58 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
     btn.textContent = "Email the organisers";
   }
   $("#mailLink").href = `mailto:${CONFIG.contactEmail}`;
+}
+
+/* ── 1b. events timeline ─────────────────────────────────
+   Status is derived from the date rather than stored, so the list stays
+   correct on its own as the term passes. */
+{
+  const list = $("#eventList");
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const fmt = (d, o) => d.toLocaleDateString("en-GB", o);
+  let nextMarked = false;
+
+  for (const [i, e] of (CONFIG.events || []).entries()) {
+    const d = new Date(e.date + "T00:00:00");
+    if (Number.isNaN(d.getTime())) continue;
+    const past = d < today;
+    const isNext = !past && !nextMarked;
+    if (isNext) nextMarked = true;
+
+    const li = document.createElement("li");
+    li.className = "tl flow" + (past ? " is-past" : "") + (isNext ? " is-next" : "");
+    li.style.setProperty("--k", i);
+    li.innerHTML =
+      `<div class="tl__when"><b>${fmt(d, { day: "2-digit", month: "short" })}</b>` +
+      `<span>${fmt(d, { year: "numeric" })}</span></div>` +
+      `<div class="tl__body"><h3>${e.title}` +
+      (isNext ? ` <span class="tl__tag">Next up</span>` : "") +
+      (past ? ` <span class="tl__tag tl__tag--past">Passed</span>` : "") +
+      `</h3>` +
+      (e.where ? `<p class="tl__where">${e.where}</p>` : "") +
+      `<p>${e.note}</p></div>`;
+    li.querySelector(".tl__when").prepend(
+      Object.assign(document.createElement("time"), { dateTime: e.date })
+    );
+    list.append(li);
+  }
+}
+
+/* ── 1c. the week's calendar ─────────────────────────────── */
+{
+  const wrap = $("#calList");
+  for (const [i, d] of (CONFIG.schedule || []).entries()) {
+    const day = document.createElement("article");
+    day.className = "cal__day flow";
+    day.style.setProperty("--k", i);
+    day.innerHTML =
+      `<div class="cal__head"><h3>${d.day}</h3>` +
+      (d.tag ? `<span class="cal__tag">${d.tag}</span>` : "") + `</div>` +
+      `<ul class="cal__slots">` +
+      d.items.map(it => `<li><b>${it.t}</b><span>${it.w}</span></li>`).join("") +
+      `</ul>`;
+    wrap.append(day);
+  }
 }
 
 /* ── 2. hero video ───────────────────────────────────────
