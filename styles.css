@@ -95,7 +95,8 @@ a{ color:inherit }
 .hero{ position:relative; background:var(--night) }
 .hero__stage{
   position:relative; min-height:100svh; display:grid; place-items:center;
-  padding:8rem 1.25rem 6rem; overflow:hidden; isolation:isolate;
+  padding:clamp(4.5rem,11vh,8rem) 1.25rem clamp(2.5rem,7vh,6rem);
+  overflow:hidden; isolation:isolate;
 }
 /* The pin only has something to animate across if the section is TALLER
    than the stage stuck inside it: this 100svh of surplus IS the runway
@@ -157,10 +158,10 @@ a{ color:inherit }
 }
 
 .hero__logo{
-  display:block; width:clamp(150px,24vw,290px); height:auto;
-  margin:0 auto 1.6rem;
+  display:block; width:min(clamp(150px,24vw,290px),34vh); height:auto;
+  margin:0 auto clamp(.7rem,2vh,1.6rem);
 }
-.kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 1.6rem }
+.kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 clamp(.7rem,2vh,1.6rem) }
 .kicker__dot{ opacity:.45; margin-inline:.5rem }
 
 .hero__title{
@@ -172,10 +173,10 @@ a{ color:inherit }
 .motion .hero__line{ transform:translate3d(0,calc(var(--p,0) * (var(--k) - 1) * 7vh),0) }
 .hero__line--out{ color:transparent; -webkit-text-stroke:1.5px rgba(95,212,228,.85); paint-order:stroke fill }
 
-.hero__sub{ font-size:clamp(1rem,.5vw + .95rem,1.2rem); color:var(--muted); max-width:46ch; margin:0 auto 2.2rem }
+.hero__sub{ font-size:clamp(1rem,.5vw + .95rem,1.2rem); color:var(--muted); max-width:46ch; margin:0 auto clamp(1rem,2.6vh,2.2rem) }
 .hero__sub span[data-cfg]{ color:var(--ink); font-weight:600 }
 
-.count{ display:flex; justify-content:center; gap:clamp(.5rem,2vw,1.1rem); margin-bottom:2.4rem }
+.count{ display:flex; justify-content:center; gap:clamp(.5rem,2vw,1.1rem); margin-bottom:clamp(1rem,2.8vh,2.4rem) }
 .count__unit{
   min-width:clamp(66px,15vw,92px); padding:.7rem .5rem .55rem;
   background:rgba(233,238,251,.045); border:1px solid var(--line); border-radius:14px;
@@ -189,7 +190,7 @@ a{ color:inherit }
 .count__live{ margin:0; font-family:var(--display); font-size:clamp(1.2rem,3.5vw,2rem); letter-spacing:.04em; color:var(--glacier) }
 
 .hero__cta{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap }
-.hero__note{ margin-top:1.5rem; font-size:.8rem; color:var(--muted) }
+.hero__note{ margin-top:clamp(.8rem,2vh,1.5rem); font-size:.8rem; color:var(--muted) }
 
 .scrollcue{
   position:absolute; bottom:1.6rem; left:50%; translate:-50% 0; z-index:3;
@@ -366,12 +367,9 @@ a{ color:inherit }
    down together rather than letting the CTA fall off the screen.
    ══════════════════════════════════════════════════════════ */
 @media (max-width:760px){
-  .hero__stage{ padding:6rem 1.1rem 4.5rem }
-  .hero__logo{ margin-bottom:1.1rem }
-  .kicker{ margin-bottom:1.1rem; font-size:.68rem; letter-spacing:.18em }
-  .hero__title{ margin-bottom:1.1rem }
-  .hero__sub{ margin-bottom:1.6rem }
-  .count{ margin-bottom:1.6rem; gap:.45rem }
+  .hero__stage{ padding-inline:1.1rem }
+  .kicker{ font-size:.68rem; letter-spacing:.18em }
+  .count{ gap:.45rem }
   .hero__cta{ width:100%; flex-direction:column; align-items:stretch }
   /* full-width stacked buttons: a 44px target beats a neat row */
   .hero__cta .btn{ width:100%; --pad:.85rem 1.2rem }
@@ -390,12 +388,17 @@ a{ color:inherit }
 
 /* Short phones in landscape, and small phones generally: the hero
    headline is the only thing big enough to sacrifice. */
-@media (max-height:700px) and (max-width:900px){
-  .hero__title{ font-size:clamp(2.4rem,10vw,3.4rem) }
-  .hero__logo{ width:clamp(130px,20vw,180px); margin-bottom:.9rem }
-  .hero__sub{ font-size:.92rem; margin-bottom:1.2rem }
+@media (max-height:760px){
+  .hero__logo{ width:min(clamp(120px,18vw,180px),22vh) }
+  .hero__sub{ font-size:.92rem }
   .count__unit{ padding:.5rem .4rem .4rem }
   .scrollcue{ display:none }
+}
+/* Below this the screen genuinely cannot hold everything, so drop the
+   least load-bearing line rather than pushing the CTA off the bottom. */
+@media (max-height:620px){
+  .hero__note{ display:none }
+  .hero__sub{ margin-bottom:.9rem }
 }
 
 /* Touch devices get no hover states — they stick on tap otherwise —
