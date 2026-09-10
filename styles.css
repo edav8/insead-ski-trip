@@ -1,6 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════
    INSEAD SKI — teaser page
 
+   Palette: deep pine ground, mint accent, warm CTA. The CTA stays
+   warm on purpose — it is the one element that must not read as
+   part of the background, and orange is the complement of green.
+   Change the six tokens below and most of the page follows. Note the
+   exceptions before recolouring: translucent surfaces, borders and
+   glows are written as rgba() of the same channels because a token
+   cannot carry an alpha, and the ridgelines, sky gradient, starfield
+   and snow are their own literals. Recolouring means sweeping those
+   too — grep for `rgba(` and `#`.
+
    Motion model: almost nothing here animates on a timer. Sections
    expose a 0→1 scroll progress as --p (set by script.js each frame)
    and elements interpolate off it, so one section's exit IS the next
@@ -13,10 +23,10 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root{
-  --night:#070c1a; --night-2:#0c1428;
-  --ink:#e9eefb; --muted:#93a2c4;
-  --glacier:#5fd4e4; --glow:#ff7a4d;
-  --line:rgba(147,162,196,.18);
+  --night:#06120d; --night-2:#0a1b13;
+  --ink:#e8f4ec; --muted:#8faa9a;
+  --accent:#4fd99b; --cta:#ff8a4c;
+  --line:rgba(143,170,154,.18);
   --wrap:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
   --display:"Anton","Haettenschweiler","Arial Narrow",sans-serif;
@@ -42,7 +52,7 @@ a{ color:inherit }
 .progress i{
   display:block; height:100%; width:100%; transform-origin:0 50%;
   transform:scaleX(var(--sp,0));
-  background:linear-gradient(90deg,var(--glacier),var(--glow));
+  background:linear-gradient(90deg,var(--accent),var(--cta));
 }
 
 #snow{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; opacity:.75 }
@@ -56,7 +66,7 @@ a{ color:inherit }
   border-bottom:1px solid transparent;
 }
 .nav.is-stuck{
-  background:rgba(7,12,26,.82);
+  background:rgba(6,18,13,.82);
   backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
   border-bottom-color:var(--line); padding-block:.7rem;
 }
@@ -66,7 +76,7 @@ a{ color:inherit }
   text-decoration:none; white-space:nowrap;
 }
 .nav__logo{ height:26px; width:auto; display:block; flex:none }
-.nav__yr{ color:var(--glacier) }
+.nav__yr{ color:var(--accent) }
 .nav__links{ display:flex; gap:1.6rem; margin-left:auto; font-size:.86rem }
 .nav__links a{ text-decoration:none; color:var(--muted); transition:color .2s; padding-block:.3rem }
 .nav__links a:hover{ color:var(--ink) }
@@ -78,16 +88,16 @@ a{ color:inherit }
   display:inline-flex; align-items:center; justify-content:center; padding:var(--pad);
   font-family:var(--body); font-weight:600; font-size:.88rem; letter-spacing:.02em;
   text-decoration:none; white-space:nowrap;
-  color:#160b05; background:var(--glow); border:1px solid var(--glow); border-radius:100px;
+  color:#160b05; background:var(--cta); border:1px solid var(--cta); border-radius:100px;
   transition:transform .25s var(--ease), box-shadow .35s var(--ease);
 }
-.btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(255,122,77,.6) }
+.btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(255,138,76,.6) }
 .btn:active{ transform:translateY(0) }
 .btn--sm{ --pad:.5rem .95rem; font-size:.8rem }
 .btn--lg{ --pad:.95rem 1.9rem; font-size:.95rem }
 .btn--block{ display:flex; width:100%; margin-top:1.5rem }
 .btn--ghost{ background:transparent; color:var(--ink); border-color:var(--line) }
-.btn--ghost:hover{ border-color:var(--glacier); color:var(--glacier); box-shadow:none }
+.btn--ghost:hover{ border-color:var(--accent); color:var(--accent); box-shadow:none }
 
 /* ══════════════ HERO ══════════════ */
 .hero{ position:relative; background:var(--night) }
@@ -116,33 +126,33 @@ a{ color:inherit }
 .hero__sky{
   position:absolute; inset:0; z-index:-1;
   background:
-    radial-gradient(120% 80% at 50% 100%, rgba(95,212,228,.16) 0%, transparent 60%),
-    radial-gradient(80% 60% at 80% 12%, rgba(255,122,77,.13) 0%, transparent 62%),
-    linear-gradient(180deg,#050914 0%,#0a1226 46%,#101c3a 100%);
+    radial-gradient(120% 80% at 50% 100%, rgba(79,217,155,.16) 0%, transparent 60%),
+    radial-gradient(80% 60% at 80% 12%, rgba(255,138,76,.13) 0%, transparent 62%),
+    linear-gradient(180deg,#040e09 0%,#08170f 46%,#0e2a1c 100%);
 }
 .hero__sky::after{
   content:""; position:absolute; inset:0; opacity:.5;
   background-image:
     radial-gradient(1.4px 1.4px at 18% 22%,#fff,transparent),
     radial-gradient(1.2px 1.2px at 72% 14%,#fff,transparent),
-    radial-gradient(1px 1px at 43% 33%,#cfe4ff,transparent),
+    radial-gradient(1px 1px at 43% 33%,#cfe9d8,transparent),
     radial-gradient(1.6px 1.6px at 88% 40%,#fff,transparent),
     radial-gradient(1px 1px at 31% 9%,#fff,transparent),
-    radial-gradient(1.2px 1.2px at 60% 28%,#cfe4ff,transparent);
+    radial-gradient(1.2px 1.2px at 60% 28%,#cfe9d8,transparent);
 }
 /* when the video is playing the starfield is just a backdrop for it */
 .has-video .hero__sky::after{ opacity:.22 }
 /* scrim deepens as you scroll so the hero hands off to solid night */
 .hero__scrim{
   position:absolute; inset:0;
-  background:linear-gradient(180deg, rgba(7,12,26,.35) 0%, rgba(7,12,26,.15) 40%, rgba(7,12,26,.92) 100%);
+  background:linear-gradient(180deg, rgba(6,18,13,.35) 0%, rgba(6,18,13,.15) 40%, rgba(6,18,13,.92) 100%);
 }
 .motion .hero__scrim{ opacity:calc(.55 + var(--p,0) * .45) }
 
 .ridge{ position:absolute; left:-4%; bottom:-1px; width:108%; z-index:-2; will-change:transform }
-.ridge--far{ height:min(58vh,470px) }  .ridge--far path{ fill:#16233f }
-.ridge--mid{ height:min(50vh,410px) }  .ridge--mid path{ fill:#0e1830 }
-.ridge--near{ height:min(40vh,340px) } .ridge--near path{ fill:#070c1a }
+.ridge--far{ height:min(58vh,470px) }  .ridge--far path{ fill:#163326 }
+.ridge--mid{ height:min(50vh,410px) }  .ridge--mid path{ fill:#0d2318 }
+.ridge--near{ height:min(40vh,340px) } .ridge--near path{ fill:#06120d }
 /* three depths climbing at different rates — the parallax IS the transition */
 .motion .ridge--far { transform:translate3d(0,calc(var(--p,0) * -6vh),0) }
 .motion .ridge--mid { transform:translate3d(0,calc(var(--p,0) * -13vh),0) }
@@ -159,7 +169,7 @@ a{ color:inherit }
   display:block; width:min(clamp(150px,24vw,290px),26vh); height:auto;
   margin:0 auto clamp(.7rem,2vh,1.6rem);
 }
-.kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 clamp(.7rem,2vh,1.6rem) }
+.kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); margin:0 0 clamp(.7rem,2vh,1.6rem) }
 .kicker__dot{ opacity:.45; margin-inline:.5rem }
 
 .hero__title{
@@ -174,7 +184,7 @@ a{ color:inherit }
 .hero__line{ display:block }
 /* each line drifts at its own rate, so the title comes apart rather than fading flat */
 .motion .hero__line{ transform:translate3d(0,calc(var(--p,0) * (var(--k) - 1) * 7vh),0) }
-.hero__line--out{ color:transparent; -webkit-text-stroke:1.5px rgba(95,212,228,.85); paint-order:stroke fill }
+.hero__line--out{ color:transparent; -webkit-text-stroke:1.5px rgba(79,217,155,.85); paint-order:stroke fill }
 
 .hero__sub{ font-size:clamp(1rem,.5vw + .95rem,1.2rem); color:var(--muted); max-width:46ch; margin:0 auto clamp(1rem,2.6vh,2.2rem) }
 .hero__sub span[data-cfg]{ color:var(--ink); font-weight:600 }
@@ -182,7 +192,7 @@ a{ color:inherit }
 .count{ display:flex; justify-content:center; gap:clamp(.5rem,2vw,1.1rem); margin-bottom:clamp(1rem,2.8vh,2.4rem) }
 .count__unit{
   min-width:clamp(66px,15vw,92px); padding:.7rem .5rem .55rem;
-  background:rgba(233,238,251,.045); border:1px solid var(--line); border-radius:14px;
+  background:rgba(232,244,236,.045); border:1px solid var(--line); border-radius:14px;
   backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
 .count__unit b{
@@ -190,7 +200,7 @@ a{ color:inherit }
   font-size:clamp(1.5rem,4.5vw,2.2rem); line-height:1; font-variant-numeric:tabular-nums;
 }
 .count__unit span{ display:block; margin-top:.3rem; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted) }
-.count__live{ margin:0; font-family:var(--display); font-size:clamp(1.2rem,3.5vw,2rem); letter-spacing:.04em; color:var(--glacier) }
+.count__live{ margin:0; font-family:var(--display); font-size:clamp(1.2rem,3.5vw,2rem); letter-spacing:.04em; color:var(--accent) }
 
 .hero__cta{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap }
 .hero__note{ margin-top:clamp(.8rem,2vh,1.5rem); font-size:.8rem; color:var(--muted) }
@@ -202,7 +212,7 @@ a{ color:inherit }
 .motion .scrollcue{ opacity:clamp(0,calc(1 - var(--p,0) * 5),1) }
 .scrollcue span{
   position:absolute; top:7px; left:50%; translate:-50% 0;
-  width:3px; height:7px; border-radius:2px; background:var(--glacier);
+  width:3px; height:7px; border-radius:2px; background:var(--accent);
   animation:cue 1.9s var(--ease) infinite;
 }
 @keyframes cue{ 0%{opacity:0;transform:translateY(0)} 30%{opacity:1} 100%{opacity:0;transform:translateY(14px)} }
@@ -214,19 +224,19 @@ a{ color:inherit }
   font-family:var(--display); font-size:1.05rem; letter-spacing:.1em;
   transform:translate3d(calc(var(--mx,0) * -1px),0,0);
 }
-.marquee__track i{ color:var(--glacier); font-style:normal }
+.marquee__track i{ color:var(--accent); font-style:normal }
 
 /* ── sections ──────────────────────────────────────────── */
 .sec{ position:relative; z-index:3; padding:clamp(4.5rem,10vw,8.5rem) 0; background:var(--night) }
 .sec--alt{ background:var(--night-2) }
 
-.eyebrow{ font-size:.7rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 1rem }
+.eyebrow{ font-size:.7rem; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); margin:0 0 1rem }
 .h2{
   font-family:var(--display); font-weight:400; text-transform:uppercase;
   font-size:clamp(2.1rem,6vw,4.2rem); line-height:.95; letter-spacing:-.01em;
   margin:0 0 1.2rem; max-width:18ch;
 }
-.h2 em{ font-style:normal; color:var(--glacier) }
+.h2 em{ font-style:normal; color:var(--accent) }
 .lede{ font-size:clamp(1rem,.4vw + .95rem,1.15rem); color:var(--muted); max-width:58ch; margin:0 0 3rem }
 .lede--tight{ margin-bottom:0 }
 
@@ -247,11 +257,11 @@ a{ color:inherit }
 .stats{ display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
 .stat{
   padding:1.6rem 1.4rem; border:1px solid var(--line); border-radius:16px;
-  background:linear-gradient(160deg,rgba(233,238,251,.05),rgba(233,238,251,.012));
+  background:linear-gradient(160deg,rgba(232,244,236,.05),rgba(232,244,236,.012));
   transition:border-color .3s;
 }
-.stat:hover{ border-color:rgba(95,212,228,.45) }
-.stat b{ display:block; font-family:var(--display); font-weight:400; font-size:clamp(2.2rem,5vw,3.1rem); line-height:1; color:var(--glacier); font-variant-numeric:tabular-nums }
+.stat:hover{ border-color:rgba(79,217,155,.45) }
+.stat b{ display:block; font-family:var(--display); font-weight:400; font-size:clamp(2.2rem,5vw,3.1rem); line-height:1; color:var(--accent); font-variant-numeric:tabular-nums }
 .stat span{ display:block; margin-top:.5rem; font-size:.83rem; color:var(--muted) }
 
 /* ══════════════ THE WEEK (pinned horizontal) ══════════════ */
@@ -266,7 +276,7 @@ a{ color:inherit }
 
 /* progress meter for the pinned run — tells you the section is finite */
 .week__meter{ margin-top:1.6rem; height:2px; width:min(320px,60%); background:var(--line); border-radius:2px; overflow:hidden }
-.week__meter i{ display:block; height:100%; width:100%; transform-origin:0 50%; transform:scaleX(var(--wp,0)); background:var(--glacier) }
+.week__meter i{ display:block; height:100%; width:100%; transform-origin:0 50%; transform:scaleX(var(--wp,0)); background:var(--accent) }
 .week__meter{ display:none }
 .motion .week__meter{ display:block }
 
@@ -288,7 +298,7 @@ a{ color:inherit }
 .wcard{
   flex:0 0 min(78vw,340px); scroll-snap-align:start;
   padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
-  background:linear-gradient(165deg,rgba(233,238,251,.055),rgba(233,238,251,.01));
+  background:linear-gradient(165deg,rgba(232,244,236,.055),rgba(232,244,236,.01));
   transition:border-color .3s;
 }
 /* cards breathe as they cross the middle of the screen */
@@ -296,11 +306,11 @@ a{ color:inherit }
   transform:scale(calc(.94 + var(--c,0) * .06));
   opacity:calc(.45 + var(--c,0) * .55);
 }
-.wcard:hover{ border-color:rgba(95,212,228,.45) }
+.wcard:hover{ border-color:rgba(79,217,155,.45) }
 .wcard__day{
   display:inline-block; margin-bottom:.9rem; padding:.22rem .6rem;
   font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--glacier); border:1px solid rgba(95,212,228,.35); border-radius:99px;
+  color:var(--accent); border:1px solid rgba(79,217,155,.35); border-radius:99px;
 }
 .wcard h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.55rem; line-height:1.05; margin:0 0 .6rem }
 .wcard p{ margin:0; font-size:.9rem; color:var(--muted) }
@@ -309,24 +319,24 @@ a{ color:inherit }
 .tiers{ display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-bottom:1.8rem }
 .tier{
   position:relative; padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
-  background:linear-gradient(165deg,rgba(233,238,251,.05),rgba(233,238,251,.01));
+  background:linear-gradient(165deg,rgba(232,244,236,.05),rgba(232,244,236,.01));
 }
-.tier--hot{ border-color:rgba(255,122,77,.5); background:linear-gradient(165deg,rgba(255,122,77,.1),rgba(233,238,251,.015)) }
+.tier--hot{ border-color:rgba(255,138,76,.5); background:linear-gradient(165deg,rgba(255,138,76,.1),rgba(232,244,236,.015)) }
 .tier__flag{
   position:absolute; top:-.7rem; left:1.6rem; padding:.2rem .6rem;
   font-size:.63rem; letter-spacing:.16em; text-transform:uppercase;
-  color:#160b05; background:var(--glow); border-radius:99px;
+  color:#160b05; background:var(--cta); border-radius:99px;
 }
 .tier h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.35rem; margin:0 0 .5rem }
-.tier__price{ font-family:var(--display); font-size:2.5rem; line-height:1; margin:0 0 .25rem; color:var(--glacier) }
-.tier--hot .tier__price{ color:var(--glow) }
+.tier__price{ font-family:var(--display); font-size:2.5rem; line-height:1; margin:0 0 .25rem; color:var(--accent) }
+.tier--hot .tier__price{ color:var(--cta) }
 .tier__when{ margin:0 0 1.2rem; font-size:.78rem; color:var(--muted) }
 .tier ul{ margin:0; padding:0; list-style:none; font-size:.88rem }
 .tier li{ padding:.4rem 0 .4rem 1.4rem; position:relative; border-top:1px solid var(--line) }
-.tier li::before{ content:"→"; position:absolute; left:0; color:var(--glacier) }
+.tier li::before{ content:"→"; position:absolute; left:0; color:var(--accent) }
 
 .finePrint{ font-size:.78rem; color:var(--muted); max-width:60ch }
-.finePrint a{ color:var(--glacier) }
+.finePrint a{ color:var(--accent) }
 
 /* faq */
 .qa{ border-top:1px solid var(--line); padding:.35rem 0 }
@@ -335,7 +345,7 @@ a{ color:inherit }
 .qa summary::-webkit-details-marker{ display:none }
 .qa summary::after{
   content:"+"; position:absolute; right:.25rem; top:50%; translate:0 -50%;
-  font-size:1.35rem; color:var(--glacier); transition:rotate .35s var(--ease);
+  font-size:1.35rem; color:var(--accent); transition:rotate .35s var(--ease);
 }
 .qa[open] summary::after{ rotate:45deg }
 .qa p{ margin:0 0 1.1rem; color:var(--muted); max-width:62ch }
@@ -344,7 +354,7 @@ a{ color:inherit }
 .signup{ background:var(--night); text-align:center; overflow:hidden }
 .signup::before{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(90% 120% at 50% 100%,rgba(255,122,77,.22),transparent 62%);
+  background:radial-gradient(90% 120% at 50% 100%,rgba(255,138,76,.22),transparent 62%);
   opacity:var(--g,1);
 }
 .signup .wrap{ position:relative }

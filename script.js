@@ -325,7 +325,7 @@ if (!reduced) {
       if (f.x < -10) f.x = w + 10;
       if (f.x > w + 10) f.x = -10;
       ctx.globalAlpha = f.a;
-      ctx.fillStyle = "#dfe9ff";
+      ctx.fillStyle = "#e4f5ea";
       ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
