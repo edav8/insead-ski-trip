@@ -33,11 +33,16 @@
      hue 214, against the accent's 153. A pure navy measures 224 and
      reads as borrowed from another palette on a green ground; 214
      keeps the navy character while staying in the same cool family.
+     The fill is 1.01:1 against the ground - identical in lightness,
+     so it is genuinely invisible. This is an OUTLINE button: the 2px
+     rim and the white label are the entire control. Note the cost -
+     the primary CTA no longer outranks the ghost button by fill, only
+     by rim colour and weight.
      The fill is only 1.9:1 against the ground, so the button's shape
      is carried by --cta-edge; every glow and border derived from the
      CTA uses the edge, not the fill, or it vanishes on a near-black
      page. */
-  --cta:#193f70; --cta-edge:#5b9ddb;
+  --cta:#0a0e1a; --cta-edge:#5b9ddb;
   --line:rgba(143,170,154,.18);
   --wrap:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -100,7 +105,7 @@ a{ color:inherit }
   display:inline-flex; align-items:center; justify-content:center; padding:var(--pad);
   font-family:var(--body); font-weight:600; font-size:.88rem; letter-spacing:.02em;
   text-decoration:none; white-space:nowrap;
-  color:#fff; background:var(--cta); border:1px solid var(--cta-edge); border-radius:100px;
+  color:#fff; background:var(--cta); border:2px solid var(--cta-edge); border-radius:100px;
   transition:transform .25s var(--ease), box-shadow .35s var(--ease);
 }
 .btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(91,157,219,.55) }
@@ -333,7 +338,7 @@ a{ color:inherit }
   position:relative; padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
   background:linear-gradient(165deg,rgba(232,244,236,.05),rgba(232,244,236,.01));
 }
-.tier--hot{ border-color:rgba(91,157,219,.55); background:linear-gradient(165deg,rgba(25,63,112,.38),rgba(232,244,236,.015)) }
+.tier--hot{ border-color:rgba(91,157,219,.55); background:linear-gradient(165deg,rgba(10,14,26,.55),rgba(232,244,236,.015)) }
 .tier__flag{
   position:absolute; top:-.7rem; left:1.6rem; padding:.2rem .6rem;
   font-size:.63rem; letter-spacing:.16em; text-transform:uppercase;

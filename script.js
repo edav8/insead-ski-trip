@@ -18,8 +18,8 @@ const CONFIG = {
 
   // ── dates ──────────────────────────────────────────────────────
   // startISO drives the countdown. Local time, 24h, with UTC offset.
-  startISO:   "2028-01-08T08:00:00+01:00", // PLACEHOLDER — first full week of Jan
-  datesLong:  "Sat 8 – Sat 15 January 2028", // PLACEHOLDER
+  startISO:   "2027-01-02T08:00:00+01:00", // first week of January 2027
+  datesLong:  "Sat 2 – Sat 9 January 2027",
 
   // ── scale ──────────────────────────────────────────────────────
   statPeople: "120+",                      // PLACEHOLDER
@@ -31,7 +31,7 @@ const CONFIG = {
   priceEarly:    "€690",                   // PLACEHOLDER
   priceStd:      "€790",                   // PLACEHOLDER
   priceGear:     "€120",                   // PLACEHOLDER
-  earlyDeadline: "31 Oct 2027",            // PLACEHOLDER
+  earlyDeadline: "31 Oct 2026",            // PLACEHOLDER
 
   // ── calls to action ────────────────────────────────────────────
   spotsNote:    "Nothing is confirmed yet — this page exists to count hands.",
