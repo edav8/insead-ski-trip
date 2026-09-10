@@ -415,7 +415,13 @@ a{ color:inherit }
 @media (max-height:450px){
   .count{ display:none }
   .hero__logo{ width:min(clamp(110px,16vw,180px),18vh) }
-  .hero__sub{ margin-bottom:.7rem }
+  .hero__sub{ font-size:.82rem; margin-bottom:.7rem }
+  .hero__title{ font-size:min(clamp(2.2rem,9vw,9.5rem),12vh) }
+  /* Height is the scarce dimension here, not width: the phone
+     breakpoint stacks these buttons, which is exactly backwards
+     in landscape. Put them back in a row. */
+  .hero__cta{ flex-direction:row; width:auto; justify-content:center }
+  .hero__cta .btn{ width:auto; --pad:.7rem 1.3rem }
 }
 
 /* Touch devices get no hover states — they stick on tap otherwise —
