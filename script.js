@@ -36,7 +36,7 @@ const CONFIG = {
   // ── calls to action ────────────────────────────────────────────
   spotsNote:    "Nothing is confirmed yet — this page exists to count hands.",
   signupUrl:    "",                        // Google Form / Typeform URL
-  contactEmail: "ski@example.com",         // PLACEHOLDER
+  contactEmail: "elisabeth.vandehout@insead.edu",
 
   // ── hero footage ───────────────────────────────────────────────
   // Streamed from Wikimedia Commons (CC BY-SA 4.0, credited in the footer).
