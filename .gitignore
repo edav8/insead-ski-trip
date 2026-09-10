@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# editors
+.vscode/
+.idea/
+*.swp
+
+# local notes that shouldn't ship
+*.local
+/scratch/
