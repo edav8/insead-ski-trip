@@ -14,6 +14,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Anton&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/mim28-logo.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,7 +27,11 @@
 
 <!-- ══ nav ══ -->
 <header class="nav" id="nav">
-  <a class="nav__mark" href="#top">INSEAD&nbsp;SKI<span class="nav__yr" data-cfg="yearShort"></span></a>
+  <a class="nav__mark" href="#top" aria-label="INSEAD Ski, MIM28 — back to top">
+    <img class="nav__logo" src="assets/mim28-logo.png" alt="" width="2080" height="880">
+    <span class="nav__rule" aria-hidden="true"></span>
+    <span class="nav__word">SKI<span class="nav__yr" data-cfg="yearShort"></span></span>
+  </a>
   <nav class="nav__links">
     <a href="#what">The trip</a>
     <a href="#week">The week</a>
@@ -60,6 +66,9 @@
     </svg>
 
     <div class="hero__inner">
+      <img class="hero__logo" src="assets/mim28-logo.png" alt="MIM28"
+           width="2080" height="880" fetchpriority="high">
+
       <p class="kicker">
         <span data-cfg="cohort"></span><span class="kicker__dot">•</span>
         <span data-cfg="resort"></span><span class="kicker__dot">•</span>
@@ -237,6 +246,7 @@
 
 <footer class="foot">
   <div class="wrap">
+    <img class="foot__logo" src="assets/mim28-logo.png" alt="" width="2080" height="880">
     <p><b>INSEAD SKI <span data-cfg="yearShort"></span></b> — run by students, for students.</p>
     <p class="foot__dis">
       Unofficial. Not an INSEAD publication. Dates, resort and pricing on this page are

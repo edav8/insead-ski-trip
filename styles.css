@@ -60,7 +60,14 @@ a{ color:inherit }
   backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
   border-bottom-color:var(--line); padding-block:.7rem;
 }
-.nav__mark{ font-family:var(--display); font-size:1.15rem; letter-spacing:.06em; text-decoration:none; white-space:nowrap }
+.nav__mark{
+  display:flex; align-items:center; gap:.55rem; min-width:0;
+  font-family:var(--display); font-size:1.15rem; letter-spacing:.06em;
+  text-decoration:none; white-space:nowrap;
+}
+.nav__logo{ height:22px; width:auto; display:block; flex:none }
+.nav__rule{ width:1px; height:17px; background:var(--line); flex:none }
+.nav__word{ flex:none }
 .nav__yr{ color:var(--glacier) }
 .nav__links{ display:flex; gap:1.6rem; margin-left:auto; font-size:.86rem }
 .nav__links a{ text-decoration:none; color:var(--muted); transition:color .2s; padding-block:.3rem }
@@ -149,6 +156,10 @@ a{ color:inherit }
   opacity:clamp(0,calc(1 - var(--p,0) * 1.9),1);
 }
 
+.hero__logo{
+  display:block; width:clamp(150px,24vw,290px); height:auto;
+  margin:0 auto 1.6rem;
+}
 .kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 1.6rem }
 .kicker__dot{ opacity:.45; margin-inline:.5rem }
 
@@ -338,11 +349,62 @@ a{ color:inherit }
 
 /* footer */
 .foot{ position:relative; z-index:3; border-top:1px solid var(--line); background:var(--night-2); padding:2.5rem 0; font-size:.82rem; color:var(--muted) }
+.foot__logo{ display:block; height:34px; width:auto; opacity:.4; margin-bottom:1.1rem }
 .foot p{ margin:0 0 .5rem }
 .foot b{ color:var(--ink); font-family:var(--display); font-weight:400; letter-spacing:.05em }
 .foot__dis{ max-width:62ch; opacity:.75; font-size:.76rem }
 .foot__credit{ max-width:62ch; opacity:.6; font-size:.72rem }
 .foot__credit a{ color:var(--muted); text-decoration:underline }
+
+/* ══════════════════════════════════════════════════════════
+   PHONE
+
+   The hero is the tight one: a 100svh stage has to hold the mark,
+   the kicker, a huge headline, a subtitle, four countdown tiles,
+   two buttons and a note. On a 667px-tall phone that does not fit
+   at desktop rhythm, so the spacing and the display sizes step
+   down together rather than letting the CTA fall off the screen.
+   ══════════════════════════════════════════════════════════ */
+@media (max-width:760px){
+  .hero__stage{ padding:6rem 1.1rem 4.5rem }
+  .hero__logo{ margin-bottom:1.1rem }
+  .kicker{ margin-bottom:1.1rem; font-size:.68rem; letter-spacing:.18em }
+  .hero__title{ margin-bottom:1.1rem }
+  .hero__sub{ margin-bottom:1.6rem }
+  .count{ margin-bottom:1.6rem; gap:.45rem }
+  .hero__cta{ width:100%; flex-direction:column; align-items:stretch }
+  /* full-width stacked buttons: a 44px target beats a neat row */
+  .hero__cta .btn{ width:100%; --pad:.85rem 1.2rem }
+  .hero__note{ margin-top:1.1rem; font-size:.74rem }
+
+  .nav{ gap:.75rem }
+  .nav__logo{ height:19px }
+  .nav__mark{ font-size:1rem }
+
+  .h2{ max-width:none }
+  .wcard{ padding:1.5rem 1.3rem }
+  .tier{ padding:1.6rem 1.3rem }
+  .qa summary{ padding-block:1.15rem }   /* comfortable tap target */
+  .foot__logo{ height:28px }
+}
+
+/* Short phones in landscape, and small phones generally: the hero
+   headline is the only thing big enough to sacrifice. */
+@media (max-height:700px) and (max-width:900px){
+  .hero__title{ font-size:clamp(2.4rem,10vw,3.4rem) }
+  .hero__logo{ width:clamp(130px,20vw,180px); margin-bottom:.9rem }
+  .hero__sub{ font-size:.92rem; margin-bottom:1.2rem }
+  .count__unit{ padding:.5rem .4rem .4rem }
+  .scrollcue{ display:none }
+}
+
+/* Touch devices get no hover states — they stick on tap otherwise —
+   and the pinned rail keeps momentum scrolling if motion is off. */
+@media (hover:none){
+  .btn:hover{ transform:none; box-shadow:none }
+  .stat:hover, .wcard:hover{ border-color:var(--line) }
+  .track{ -webkit-overflow-scrolling:touch }
+}
 
 /* ── reduced motion / no JS ─────────────────────────────
    `.motion` is simply never added, so every rule above that
