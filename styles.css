@@ -401,6 +401,8 @@ a{ color:inherit }
    dropped in order of how little they carry: the reassurance note, then
    the countdown. The mark, the headline and the CTA never go. */
 @media (max-height:620px){
+  /* the stage no longer needs desktop breathing room above the fold */
+  .hero__stage{ padding-block:3.6rem 1.2rem }
   .hero__note{ display:none }
   .hero__sub{ font-size:.86rem; margin-bottom:.9rem }
   .hero__title{ font-size:min(clamp(2.5rem,11vw,9.5rem),13vh) }
