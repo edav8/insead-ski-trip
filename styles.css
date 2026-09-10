@@ -1,188 +1,181 @@
-/* ═══════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    INSEAD SKI — teaser page
-   Palette: alpine night → glacier → alpenglow
-   ═══════════════════════════════════════════════════════════ */
+
+   Motion model: almost nothing here animates on a timer. Sections
+   expose a 0→1 scroll progress as --p (set by script.js each frame)
+   and elements interpolate off it, so one section's exit IS the next
+   section's entrance. Anything that would snap is a bug.
+
+   Everything scroll-driven is gated behind `.motion` on <html>,
+   which the script adds only when JS runs AND the visitor has not
+   asked for reduced motion. Without it the page is a plain, fully
+   visible, top-to-bottom document.
+   ═══════════════════════════════════════════════════════════════ */
 
 :root{
-  --night:   #070c1a;
-  --night-2: #0c1428;
-  --ink:     #e9eefb;
-  --muted:   #93a2c4;
-  --glacier: #5fd4e4;
-  --glow:    #ff7a4d;   /* alpenglow — CTAs only */
-  --line:    rgba(147,162,196,.18);
-  --wrap:    1180px;
-  --ease:    cubic-bezier(.2,.7,.2,1);
-
-  --display: "Anton", "Haettenschweiler", "Arial Narrow", sans-serif;
-  --body:    "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --night:#070c1a; --night-2:#0c1428;
+  --ink:#e9eefb; --muted:#93a2c4;
+  --glacier:#5fd4e4; --glow:#ff7a4d;
+  --line:rgba(147,162,196,.18);
+  --wrap:1180px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --display:"Anton","Haettenschweiler","Arial Narrow",sans-serif;
+  --body:"Archivo",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 
 *,*::before,*::after{ box-sizing:border-box }
-
 html{ scroll-behavior:smooth }
 @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto } }
 
 body{
-  margin:0;
-  background:var(--night);
-  color:var(--ink);
-  font-family:var(--body);
-  font-size:clamp(15px,.4vw + 14px,17px);
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  margin:0; background:var(--night); color:var(--ink);
+  font-family:var(--body); font-size:clamp(15px,.4vw + 14px,17px);
+  line-height:1.65; -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
-
 img{ max-width:100% }
 a{ color:inherit }
+.wrap{ width:min(100% - 2.5rem,var(--wrap)); margin-inline:auto }
+.wrap--narrow{ width:min(100% - 2.5rem,720px) }
 
-.wrap{ width:min(100% - 2.5rem, var(--wrap)); margin-inline:auto }
-.wrap--narrow{ width:min(100% - 2.5rem, 720px) }
-
-/* ── snow canvas ───────────────────────────────────────── */
-#snow{
-  position:fixed; inset:0; width:100%; height:100%;
-  pointer-events:none; z-index:2; opacity:.75;
+/* ── scroll progress hairline ───────────────────────────── */
+.progress{ position:fixed; inset:0 0 auto; height:2px; z-index:30; background:transparent }
+.progress i{
+  display:block; height:100%; width:100%; transform-origin:0 50%;
+  transform:scaleX(var(--sp,0));
+  background:linear-gradient(90deg,var(--glacier),var(--glow));
 }
+
+#snow{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; opacity:.75 }
 
 /* ── nav ───────────────────────────────────────────────── */
 .nav{
-  position:fixed; top:0; left:0; right:0; z-index:20;
-  display:flex; align-items:center; gap:2rem;
+  position:fixed; inset:0 0 auto; z-index:20; display:flex; align-items:center; gap:2rem;
   padding:1rem clamp(1.25rem,4vw,2.5rem);
-  transition:background .4s var(--ease), backdrop-filter .4s var(--ease),
-             border-color .4s var(--ease), padding .4s var(--ease);
+  transition:background .5s var(--ease), backdrop-filter .5s var(--ease),
+             border-color .5s var(--ease), padding .5s var(--ease);
   border-bottom:1px solid transparent;
 }
 .nav.is-stuck{
   background:rgba(7,12,26,.82);
-  backdrop-filter:blur(14px) saturate(140%);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
-  border-bottom-color:var(--line);
-  padding-block:.7rem;
+  backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
+  border-bottom-color:var(--line); padding-block:.7rem;
 }
-.nav__mark{
-  font-family:var(--display); font-size:1.15rem; letter-spacing:.06em;
-  text-decoration:none; white-space:nowrap;
-}
+.nav__mark{ font-family:var(--display); font-size:1.15rem; letter-spacing:.06em; text-decoration:none; white-space:nowrap }
 .nav__yr{ color:var(--glacier) }
 .nav__links{ display:flex; gap:1.6rem; margin-left:auto; font-size:.86rem }
-.nav__links a{
-  text-decoration:none; color:var(--muted); transition:color .2s;
-  padding-block:.3rem;
-}
+.nav__links a{ text-decoration:none; color:var(--muted); transition:color .2s; padding-block:.3rem }
 .nav__links a:hover{ color:var(--ink) }
 @media (max-width:760px){ .nav__links{ display:none } .nav .btn{ margin-left:auto } }
 
 /* ── buttons ───────────────────────────────────────────── */
 .btn{
-  --pad: .7rem 1.15rem;
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:var(--pad);
-  font-family:var(--body); font-weight:600; font-size:.88rem;
-  letter-spacing:.02em; text-decoration:none; white-space:nowrap;
-  color:#160b05; background:var(--glow);
-  border:1px solid var(--glow); border-radius:100px;
-  transition:transform .2s var(--ease), box-shadow .3s var(--ease), background .2s;
+  --pad:.7rem 1.15rem;
+  display:inline-flex; align-items:center; justify-content:center; padding:var(--pad);
+  font-family:var(--body); font-weight:600; font-size:.88rem; letter-spacing:.02em;
+  text-decoration:none; white-space:nowrap;
+  color:#160b05; background:var(--glow); border:1px solid var(--glow); border-radius:100px;
+  transition:transform .25s var(--ease), box-shadow .35s var(--ease);
 }
 .btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(255,122,77,.6) }
 .btn:active{ transform:translateY(0) }
 .btn--sm{ --pad:.5rem .95rem; font-size:.8rem }
 .btn--lg{ --pad:.95rem 1.9rem; font-size:.95rem }
 .btn--block{ display:flex; width:100%; margin-top:1.5rem }
-.btn--ghost{
-  background:transparent; color:var(--ink); border-color:var(--line);
-}
-.btn--ghost:hover{ border-color:var(--glacier); box-shadow:none; color:var(--glacier) }
+.btn--ghost{ background:transparent; color:var(--ink); border-color:var(--line) }
+.btn--ghost:hover{ border-color:var(--glacier); color:var(--glacier); box-shadow:none }
 
-/* ── hero ──────────────────────────────────────────────── */
-.hero{
-  position:relative; min-height:100svh;
-  display:grid; place-items:center;
-  padding:8rem 1.25rem 6rem;
-  overflow:hidden; isolation:isolate;
+/* ══════════════ HERO ══════════════ */
+.hero{ position:relative; background:var(--night) }
+.hero__stage{
+  position:relative; min-height:100svh; display:grid; place-items:center;
+  padding:8rem 1.25rem 6rem; overflow:hidden; isolation:isolate;
+}
+/* The pin only has something to animate across if the section is TALLER
+   than the stage stuck inside it: this 100svh of surplus IS the runway
+   the hero dissolves over. Equal heights would snap --p from 0 to 1. */
+.motion .hero{ height:200svh }
+.motion .hero__stage{ position:sticky; top:0; height:100svh; min-height:0 }
+
+.hero__media{ position:absolute; inset:0; z-index:-3; overflow:hidden }
+.hero__video{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transition:opacity 1.2s var(--ease);
+}
+.hero__video.is-ready{ opacity:.55 }
+/* video pushes back and drifts as the hero scrolls away */
+.motion .hero__video{
+  transform:scale(calc(1 + var(--p,0) * .22)) translate3d(0,calc(var(--p,0) * 4vh),0);
+  filter:blur(calc(var(--p,0) * 6px));
 }
 .hero__sky{
-  position:absolute; inset:0; z-index:-3;
+  position:absolute; inset:0; z-index:-1;
   background:
     radial-gradient(120% 80% at 50% 100%, rgba(95,212,228,.16) 0%, transparent 60%),
-    radial-gradient(80% 60% at 80% 12%,  rgba(255,122,77,.13) 0%, transparent 62%),
-    linear-gradient(180deg, #050914 0%, #0a1226 46%, #101c3a 100%);
+    radial-gradient(80% 60% at 80% 12%, rgba(255,122,77,.13) 0%, transparent 62%),
+    linear-gradient(180deg,#050914 0%,#0a1226 46%,#101c3a 100%);
 }
-/* faint stars */
 .hero__sky::after{
   content:""; position:absolute; inset:0; opacity:.5;
   background-image:
-    radial-gradient(1.4px 1.4px at 18% 22%, #fff, transparent),
-    radial-gradient(1.2px 1.2px at 72% 14%, #fff, transparent),
-    radial-gradient(1px 1px   at 43% 33%, #cfe4ff, transparent),
-    radial-gradient(1.6px 1.6px at 88% 40%, #fff, transparent),
-    radial-gradient(1px 1px   at 31% 9%,  #fff, transparent),
-    radial-gradient(1.2px 1.2px at 60% 28%, #cfe4ff, transparent);
+    radial-gradient(1.4px 1.4px at 18% 22%,#fff,transparent),
+    radial-gradient(1.2px 1.2px at 72% 14%,#fff,transparent),
+    radial-gradient(1px 1px at 43% 33%,#cfe4ff,transparent),
+    radial-gradient(1.6px 1.6px at 88% 40%,#fff,transparent),
+    radial-gradient(1px 1px at 31% 9%,#fff,transparent),
+    radial-gradient(1.2px 1.2px at 60% 28%,#cfe4ff,transparent);
 }
+/* when the video is playing the starfield is just a backdrop for it */
+.has-video .hero__sky::after{ opacity:.22 }
+/* scrim deepens as you scroll so the hero hands off to solid night */
+.hero__scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(7,12,26,.35) 0%, rgba(7,12,26,.15) 40%, rgba(7,12,26,.92) 100%);
+}
+.motion .hero__scrim{ opacity:calc(.55 + var(--p,0) * .45) }
 
-.ridge{
-  position:absolute; left:-4%; bottom:-1px; width:108%; height:min(52vh,430px);
-  z-index:-2; will-change:transform;
-}
-.ridge--far  path{ fill:#16233f }
-.ridge--mid  path{ fill:#0e1830 }
-.ridge--near path{ fill:#070c1a }
-.ridge--far { height:min(58vh,470px) }
-.ridge--mid { height:min(50vh,410px) }
-.ridge--near{ height:min(40vh,340px) }
+.ridge{ position:absolute; left:-4%; bottom:-1px; width:108%; z-index:-2; will-change:transform }
+.ridge--far{ height:min(58vh,470px) }  .ridge--far path{ fill:#16233f }
+.ridge--mid{ height:min(50vh,410px) }  .ridge--mid path{ fill:#0e1830 }
+.ridge--near{ height:min(40vh,340px) } .ridge--near path{ fill:#070c1a }
+/* three depths climbing at different rates — the parallax IS the transition */
+.motion .ridge--far { transform:translate3d(0,calc(var(--p,0) * -6vh),0) }
+.motion .ridge--mid { transform:translate3d(0,calc(var(--p,0) * -13vh),0) }
+.motion .ridge--near{ transform:translate3d(0,calc(var(--p,0) * -22vh),0) }
 
 .hero__inner{ position:relative; z-index:3; text-align:center; max-width:960px }
-
-.kicker{
-  font-size:.75rem; letter-spacing:.28em; text-transform:uppercase;
-  color:var(--glacier); margin:0 0 1.6rem;
+/* the whole block lifts and dissolves; nothing waits its turn */
+.motion .hero__inner{
+  transform:translate3d(0,calc(var(--p,0) * -9vh),0);
+  opacity:clamp(0,calc(1 - var(--p,0) * 1.9),1);
 }
+
+.kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 1.6rem }
 .kicker__dot{ opacity:.45; margin-inline:.5rem }
 
 .hero__title{
-  font-family:var(--display); font-weight:400;
-  font-size:clamp(3.1rem, 12vw, 9.5rem);
-  line-height:.86; letter-spacing:-.015em;
-  margin:0 0 1.6rem; text-transform:uppercase;
+  font-family:var(--display); font-weight:400; font-size:clamp(3.1rem,12vw,9.5rem);
+  line-height:.86; letter-spacing:-.015em; margin:0 0 1.6rem; text-transform:uppercase;
 }
 .hero__line{ display:block }
-.hero__line--out{
-  color:transparent;
-  -webkit-text-stroke:1.5px rgba(95,212,228,.85);
-  paint-order:stroke fill;
-}
+/* each line drifts at its own rate, so the title comes apart rather than fading flat */
+.motion .hero__line{ transform:translate3d(0,calc(var(--p,0) * (var(--k) - 1) * 7vh),0) }
+.hero__line--out{ color:transparent; -webkit-text-stroke:1.5px rgba(95,212,228,.85); paint-order:stroke fill }
 
-.hero__sub{
-  font-size:clamp(1rem,.5vw + .95rem,1.2rem);
-  color:var(--muted); max-width:46ch; margin:0 auto 2.2rem;
-}
+.hero__sub{ font-size:clamp(1rem,.5vw + .95rem,1.2rem); color:var(--muted); max-width:46ch; margin:0 auto 2.2rem }
 .hero__sub span[data-cfg]{ color:var(--ink); font-weight:600 }
 
-/* countdown */
 .count{ display:flex; justify-content:center; gap:clamp(.5rem,2vw,1.1rem); margin-bottom:2.4rem }
 .count__unit{
-  min-width:clamp(66px,15vw,92px);
-  padding:.7rem .5rem .55rem;
-  background:rgba(233,238,251,.045);
-  border:1px solid var(--line); border-radius:14px;
+  min-width:clamp(66px,15vw,92px); padding:.7rem .5rem .55rem;
+  background:rgba(233,238,251,.045); border:1px solid var(--line); border-radius:14px;
   backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
 .count__unit b{
   display:block; font-family:var(--display); font-weight:400;
-  font-size:clamp(1.5rem,4.5vw,2.2rem); line-height:1;
-  font-variant-numeric:tabular-nums;
+  font-size:clamp(1.5rem,4.5vw,2.2rem); line-height:1; font-variant-numeric:tabular-nums;
 }
-.count__unit span{
-  display:block; margin-top:.3rem;
-  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted);
-}
-
-.count__live{
-  margin:0; font-family:var(--display); font-size:clamp(1.2rem,3.5vw,2rem);
-  letter-spacing:.04em; color:var(--glacier);
-}
+.count__unit span{ display:block; margin-top:.3rem; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted) }
+.count__live{ margin:0; font-family:var(--display); font-size:clamp(1.2rem,3.5vw,2rem); letter-spacing:.04em; color:var(--glacier) }
 
 .hero__cta{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap }
 .hero__note{ margin-top:1.5rem; font-size:.8rem; color:var(--muted) }
@@ -191,6 +184,7 @@ a{ color:inherit }
   position:absolute; bottom:1.6rem; left:50%; translate:-50% 0; z-index:3;
   width:22px; height:36px; border:1px solid var(--line); border-radius:12px;
 }
+.motion .scrollcue{ opacity:clamp(0,calc(1 - var(--p,0) * 5),1) }
 .scrollcue span{
   position:absolute; top:7px; left:50%; translate:-50% 0;
   width:3px; height:7px; border-radius:2px; background:var(--glacier);
@@ -199,26 +193,19 @@ a{ color:inherit }
 @keyframes cue{ 0%{opacity:0;transform:translateY(0)} 30%{opacity:1} 100%{opacity:0;transform:translateY(14px)} }
 
 /* ── marquee ───────────────────────────────────────────── */
-.marquee{
-  overflow:hidden; border-block:1px solid var(--line);
-  background:var(--night-2); padding:.85rem 0; position:relative; z-index:3;
-}
+.marquee{ overflow:hidden; border-block:1px solid var(--line); background:var(--night-2); padding:.85rem 0; position:relative; z-index:3 }
 .marquee__track{
   display:flex; gap:2.2rem; width:max-content;
-  animation:slide 34s linear infinite;
   font-family:var(--display); font-size:1.05rem; letter-spacing:.1em;
+  transform:translate3d(calc(var(--mx,0) * -1px),0,0);
 }
 .marquee__track i{ color:var(--glacier); font-style:normal }
-@keyframes slide{ to{ transform:translateX(-50%) } }
 
 /* ── sections ──────────────────────────────────────────── */
 .sec{ position:relative; z-index:3; padding:clamp(4.5rem,10vw,8.5rem) 0; background:var(--night) }
 .sec--alt{ background:var(--night-2) }
 
-.eyebrow{
-  font-size:.7rem; letter-spacing:.28em; text-transform:uppercase;
-  color:var(--glacier); margin:0 0 1rem;
-}
+.eyebrow{ font-size:.7rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 1rem }
 .h2{
   font-family:var(--display); font-weight:400; text-transform:uppercase;
   font-size:clamp(2.1rem,6vw,4.2rem); line-height:.95; letter-spacing:-.01em;
@@ -228,66 +215,94 @@ a{ color:inherit }
 .lede{ font-size:clamp(1rem,.4vw + .95rem,1.15rem); color:var(--muted); max-width:58ch; margin:0 0 3rem }
 .lede--tight{ margin-bottom:0 }
 
+/* ── the flow primitive ─────────────────────────────────
+   --e is each element's own 0→1 entry progress, written every
+   frame while it is near the viewport. Because it tracks scroll
+   position rather than firing a fixed-length transition, reversing
+   the scroll reverses the animation and the whole page feels
+   attached to the wheel. --k staggers siblings by delaying the
+   ramp, without ever letting one snap in. */
+.motion .flow{
+  opacity:var(--e,0);
+  transform:translate3d(0,calc((1 - var(--e,0)) * 34px),0)
+            scale(calc(.985 + var(--e,0) * .015));
+}
+
 /* stats */
 .stats{ display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
 .stat{
   padding:1.6rem 1.4rem; border:1px solid var(--line); border-radius:16px;
-  background:linear-gradient(160deg, rgba(233,238,251,.05), rgba(233,238,251,.012));
-  transition:border-color .3s, transform .3s var(--ease);
+  background:linear-gradient(160deg,rgba(233,238,251,.05),rgba(233,238,251,.012));
+  transition:border-color .3s;
 }
-.stat:hover{ border-color:rgba(95,212,228,.45); transform:translateY(-4px) }
-.stat b{
-  display:block; font-family:var(--display); font-weight:400;
-  font-size:clamp(2.2rem,5vw,3.1rem); line-height:1; color:var(--glacier);
-}
+.stat:hover{ border-color:rgba(95,212,228,.45) }
+.stat b{ display:block; font-family:var(--display); font-weight:400; font-size:clamp(2.2rem,5vw,3.1rem); line-height:1; color:var(--glacier); font-variant-numeric:tabular-nums }
 .stat span{ display:block; margin-top:.5rem; font-size:.83rem; color:var(--muted) }
 
-/* horizontal rail of day cards */
-.rail{
-  display:flex; gap:1rem; margin-top:3rem;
-  padding-inline:max(1.25rem, calc((100vw - var(--wrap))/2));
-  padding-bottom:1.25rem;
-  overflow-x:auto; scroll-snap-type:x mandatory;
+/* ══════════════ THE WEEK (pinned horizontal) ══════════════ */
+.week{ position:relative; z-index:3; background:var(--night-2) }
+.week__stage{ padding:clamp(4.5rem,10vw,7rem) 0 }
+.motion .week__stage{
+  position:sticky; top:0; height:100svh;
+  display:flex; flex-direction:column; justify-content:center; gap:2.5rem; padding:0;
+}
+.week__head{ margin-bottom:2.5rem }
+.motion .week__head{ margin-bottom:0 }
+
+/* progress meter for the pinned run — tells you the section is finite */
+.week__meter{ margin-top:1.6rem; height:2px; width:min(320px,60%); background:var(--line); border-radius:2px; overflow:hidden }
+.week__meter i{ display:block; height:100%; width:100%; transform-origin:0 50%; transform:scaleX(var(--wp,0)); background:var(--glacier) }
+.week__meter{ display:none }
+.motion .week__meter{ display:block }
+
+.track{
+  display:flex; gap:1rem;
+  padding-inline:max(1.25rem,calc((100vw - var(--wrap))/2));
+  padding-bottom:1.25rem; overflow-x:auto; scroll-snap-type:x mandatory;
   scrollbar-width:thin; scrollbar-color:var(--line) transparent;
 }
-.rail::-webkit-scrollbar{ height:6px }
-.rail::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px }
-.card{
-  flex:0 0 min(78vw,320px); scroll-snap-align:start;
-  padding:1.7rem 1.5rem; border:1px solid var(--line); border-radius:18px;
-  background:linear-gradient(165deg, rgba(233,238,251,.055), rgba(233,238,251,.01));
-  transition:opacity .6s var(--ease), transform .35s var(--ease), border-color .3s;
+.track::-webkit-scrollbar{ height:6px }
+.track::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px }
+/* pinned: vertical scroll is remapped to horizontal travel */
+.motion .track{
+  overflow:visible; scroll-snap-type:none; padding-bottom:0;
+  transform:translate3d(calc(var(--tx,0) * -1px),0,0);
+  will-change:transform;
 }
-/* Cards reveal off the RAIL's state, not their own: the ones parked off the
-   right edge never intersect the viewport, so observing them individually
-   left the last card permanently invisible. */
-.js .card{ opacity:0; transform:translateY(18px); transition-delay:calc(var(--i,0) * 90ms) }
-.js .rail.is-in .card{ opacity:1; transform:none }
-.card:hover{ border-color:rgba(95,212,228,.45); transform:translateY(-5px); transition-delay:0s }
-.card__day{
+
+.wcard{
+  flex:0 0 min(78vw,340px); scroll-snap-align:start;
+  padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
+  background:linear-gradient(165deg,rgba(233,238,251,.055),rgba(233,238,251,.01));
+  transition:border-color .3s;
+}
+/* cards breathe as they cross the middle of the screen */
+.motion .wcard{
+  transform:scale(calc(.94 + var(--c,0) * .06));
+  opacity:calc(.45 + var(--c,0) * .55);
+}
+.wcard:hover{ border-color:rgba(95,212,228,.45) }
+.wcard__day{
   display:inline-block; margin-bottom:.9rem; padding:.22rem .6rem;
   font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
   color:var(--glacier); border:1px solid rgba(95,212,228,.35); border-radius:99px;
 }
-.card h3{ font-family:var(--display); font-weight:400; text-transform:uppercase;
-  font-size:1.5rem; line-height:1.05; margin:0 0 .6rem }
-.card p{ margin:0; font-size:.9rem; color:var(--muted) }
+.wcard h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.55rem; line-height:1.05; margin:0 0 .6rem }
+.wcard p{ margin:0; font-size:.9rem; color:var(--muted) }
 
 /* tiers */
 .tiers{ display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-bottom:1.8rem }
 .tier{
-  position:relative; padding:1.9rem 1.6rem;
-  border:1px solid var(--line); border-radius:18px;
-  background:linear-gradient(165deg, rgba(233,238,251,.05), rgba(233,238,251,.01));
+  position:relative; padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
+  background:linear-gradient(165deg,rgba(233,238,251,.05),rgba(233,238,251,.01));
 }
-.tier--hot{ border-color:rgba(255,122,77,.5); background:linear-gradient(165deg, rgba(255,122,77,.1), rgba(233,238,251,.015)) }
+.tier--hot{ border-color:rgba(255,122,77,.5); background:linear-gradient(165deg,rgba(255,122,77,.1),rgba(233,238,251,.015)) }
 .tier__flag{
-  position:absolute; top:-.7rem; left:1.6rem;
-  padding:.2rem .6rem; font-size:.63rem; letter-spacing:.16em; text-transform:uppercase;
+  position:absolute; top:-.7rem; left:1.6rem; padding:.2rem .6rem;
+  font-size:.63rem; letter-spacing:.16em; text-transform:uppercase;
   color:#160b05; background:var(--glow); border-radius:99px;
 }
-.tier h3{ font-family:var(--display); font-weight:400; text-transform:uppercase;
-  font-size:1.35rem; margin:0 0 .5rem }
+.tier h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.35rem; margin:0 0 .5rem }
 .tier__price{ font-family:var(--display); font-size:2.5rem; line-height:1; margin:0 0 .25rem; color:var(--glacier) }
 .tier--hot .tier__price{ color:var(--glow) }
 .tier__when{ margin:0 0 1.2rem; font-size:.78rem; color:var(--muted) }
@@ -301,49 +316,38 @@ a{ color:inherit }
 /* faq */
 .qa{ border-top:1px solid var(--line); padding:.35rem 0 }
 .qa:last-of-type{ border-bottom:1px solid var(--line) }
-.qa summary{
-  cursor:pointer; list-style:none; padding:1.05rem 2rem 1.05rem 0;
-  font-weight:600; position:relative;
-}
+.qa summary{ cursor:pointer; list-style:none; padding:1.05rem 2rem 1.05rem 0; font-weight:600; position:relative }
 .qa summary::-webkit-details-marker{ display:none }
 .qa summary::after{
   content:"+"; position:absolute; right:.25rem; top:50%; translate:0 -50%;
-  font-size:1.35rem; color:var(--glacier); transition:rotate .3s var(--ease);
+  font-size:1.35rem; color:var(--glacier); transition:rotate .35s var(--ease);
 }
 .qa[open] summary::after{ rotate:45deg }
 .qa p{ margin:0 0 1.1rem; color:var(--muted); max-width:62ch }
 
-/* signup */
-.signup{
-  background:
-    radial-gradient(90% 120% at 50% 0%, rgba(255,122,77,.14), transparent 62%),
-    var(--night);
-  text-align:center;
+/* signup — the glow rises with the section instead of just sitting there */
+.signup{ background:var(--night); text-align:center; overflow:hidden }
+.signup::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(90% 120% at 50% 100%,rgba(255,122,77,.22),transparent 62%);
+  opacity:var(--g,1);
 }
+.signup .wrap{ position:relative }
 .signup .lede{ margin-inline:auto }
 .signup .finePrint{ margin:1.2rem auto 0 }
 
 /* footer */
-.foot{
-  position:relative; z-index:3;
-  border-top:1px solid var(--line); background:var(--night-2);
-  padding:2.5rem 0; font-size:.82rem; color:var(--muted);
-}
+.foot{ position:relative; z-index:3; border-top:1px solid var(--line); background:var(--night-2); padding:2.5rem 0; font-size:.82rem; color:var(--muted) }
 .foot p{ margin:0 0 .5rem }
 .foot b{ color:var(--ink); font-family:var(--display); font-weight:400; letter-spacing:.05em }
 .foot__dis{ max-width:62ch; opacity:.75; font-size:.76rem }
+.foot__credit{ max-width:62ch; opacity:.6; font-size:.72rem }
+.foot__credit a{ color:var(--muted); text-decoration:underline }
 
-/* ── scroll reveal ─────────────────────────────────────── */
-.js .reveal{
-  opacity:0; transform:translateY(22px);
-  transition:opacity .7s var(--ease), transform .7s var(--ease);
-  transition-delay:calc(var(--i,0) * 70ms);
-}
-.js .reveal.is-in{ opacity:1; transform:none }
-
+/* ── reduced motion / no JS ─────────────────────────────
+   `.motion` is simply never added, so every rule above that
+   depends on it drops out and this is a static document. The
+   only thing left to do is stop the decorative loop. */
 @media (prefers-reduced-motion:reduce){
-  .js .reveal, .js .card{ opacity:1; transform:none; transition:none }
-  .marquee__track{ animation:none }
   .scrollcue span{ animation:none }
-  .ridge{ transform:none !important }
 }

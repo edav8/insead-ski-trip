@@ -6,20 +6,21 @@
 <title>INSEAD Ski — MIM28</title>
 <meta name="description" content="The INSEAD MIM28 ski trip. One mountain. One week. The whole cohort.">
 <meta name="theme-color" content="#070c1a">
-
-<!-- Open Graph / social preview -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="INSEAD Ski — MIM28">
 <meta property="og:description" content="One mountain. One week. The whole cohort.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://upload.wikimedia.org" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Anton&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ══ snowfall canvas (fixed, behind everything) ══ -->
+<!-- scroll progress hairline -->
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
 <canvas id="snow" aria-hidden="true"></canvas>
 
 <!-- ══ nav ══ -->
@@ -34,63 +35,69 @@
   <a class="btn btn--sm" href="#signup">Register interest</a>
 </header>
 
-<!-- ══ hero ══ -->
-<section class="hero" id="top">
-  <div class="hero__sky" aria-hidden="true"></div>
+<!-- ══════════════ HERO ══════════════
+     Tall section + sticky stage: everything inside is driven by --p,
+     the section's own 0→1 scroll progress, so the hero doesn't "finish"
+     and hand over — it dissolves continuously into what follows. -->
+<section class="hero" id="top" data-pin="hero">
+  <div class="hero__stage">
 
-  <!-- layered ridgelines, each parallaxed at a different rate -->
-  <svg class="ridge ridge--far"  data-depth="0.08" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 420V250l150-92 120 66 170-128 165 122 145-86 180 118 150-70 200 96 160-52v176z"/>
-  </svg>
-  <svg class="ridge ridge--mid"  data-depth="0.16" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 420V300l190-118 155 96 195-150 175 140 160-96 205 132 170-78 190 108v186z"/>
-  </svg>
-  <svg class="ridge ridge--near" data-depth="0.28" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 420V344l230-142 180 118 230-176 200 164 190-112 240 154 170-84v354z"/>
-  </svg>
-
-  <div class="hero__inner">
-    <p class="kicker">
-      <span data-cfg="cohort"></span>
-      <span class="kicker__dot">•</span>
-      <span data-cfg="resort"></span>
-      <span class="kicker__dot">•</span>
-      <span data-cfg="country"></span>
-    </p>
-
-    <h1 class="hero__title">
-      <span class="hero__line">ONE</span>
-      <span class="hero__line hero__line--out">MOUNTAIN</span>
-      <span class="hero__line">ONE WEEK</span>
-    </h1>
-
-    <p class="hero__sub">
-      The whole cohort, <span data-cfg="altitude"></span> above sea level,
-      for <span data-cfg="datesLong"></span>.
-      Bring skis, bring stamina.
-    </p>
-
-    <!-- countdown -->
-    <div class="count" id="count" aria-live="polite">
-      <div class="count__unit"><b id="c-d">—</b><span>days</span></div>
-      <div class="count__unit"><b id="c-h">—</b><span>hrs</span></div>
-      <div class="count__unit"><b id="c-m">—</b><span>min</span></div>
-      <div class="count__unit"><b id="c-s">—</b><span>sec</span></div>
+    <div class="hero__media" aria-hidden="true">
+      <video class="hero__video" id="heroVideo"
+             autoplay muted loop playsinline preload="none" tabindex="-1"></video>
+      <div class="hero__sky"></div>
+      <div class="hero__scrim"></div>
     </div>
 
-    <div class="hero__cta">
-      <a class="btn btn--lg" href="#signup">Register interest</a>
-      <a class="btn btn--ghost btn--lg" href="#what">What is this?</a>
+    <svg class="ridge ridge--far"  viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 420V250l150-92 120 66 170-128 165 122 145-86 180 118 150-70 200 96 160-52v176z"/>
+    </svg>
+    <svg class="ridge ridge--mid"  viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 420V300l190-118 155 96 195-150 175 140 160-96 205 132 170-78 190 108v186z"/>
+    </svg>
+    <svg class="ridge ridge--near" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 420V344l230-142 180 118 230-176 200 164 190-112 240 154 170-84v354z"/>
+    </svg>
+
+    <div class="hero__inner">
+      <p class="kicker">
+        <span data-cfg="cohort"></span><span class="kicker__dot">•</span>
+        <span data-cfg="resort"></span><span class="kicker__dot">•</span>
+        <span data-cfg="country"></span>
+      </p>
+
+      <h1 class="hero__title">
+        <span class="hero__line" style="--k:0">ONE</span>
+        <span class="hero__line hero__line--out" style="--k:1">MOUNTAIN</span>
+        <span class="hero__line" style="--k:2">ONE WEEK</span>
+      </h1>
+
+      <p class="hero__sub">
+        The whole cohort, <span data-cfg="altitude"></span> above sea level,
+        for <span data-cfg="datesLong"></span>. Bring skis, bring stamina.
+      </p>
+
+      <div class="count" id="count" aria-live="polite">
+        <div class="count__unit"><b id="c-d">—</b><span>days</span></div>
+        <div class="count__unit"><b id="c-h">—</b><span>hrs</span></div>
+        <div class="count__unit"><b id="c-m">—</b><span>min</span></div>
+        <div class="count__unit"><b id="c-s">—</b><span>sec</span></div>
+      </div>
+
+      <div class="hero__cta">
+        <a class="btn btn--lg" href="#signup">Register interest</a>
+        <a class="btn btn--ghost btn--lg" href="#what">What is this?</a>
+      </div>
+
+      <p class="hero__note"><span data-cfg="spotsNote"></span></p>
     </div>
 
-    <p class="hero__note"><span data-cfg="spotsNote"></span></p>
+    <div class="scrollcue" aria-hidden="true"><span></span></div>
   </div>
-
-  <div class="scrollcue" aria-hidden="true"><span></span></div>
 </section>
 
-<!-- ══ marquee ══ -->
-<div class="marquee" aria-hidden="true">
+<!-- ══ marquee — speed reacts to how fast you scroll ══ -->
+<div class="marquee" id="marquee" aria-hidden="true">
   <div class="marquee__track">
     <span>POWDER</span><i>✦</i><span>ALTITUDE</span><i>✦</i><span>APRÈS</span><i>✦</i>
     <span>NO 8AM LECTURES</span><i>✦</i><span>CHALET CHAOS</span><i>✦</i><span>FONDUE</span><i>✦</i>
@@ -102,94 +109,93 @@
 <!-- ══ what ══ -->
 <section class="sec" id="what">
   <div class="wrap">
-    <p class="eyebrow reveal">01 — The trip</p>
-    <h2 class="h2 reveal">Seven days off the <em>grid</em>, on the <em>glacier</em>.</h2>
-    <p class="lede reveal">
+    <p class="eyebrow flow">01 — The trip</p>
+    <h2 class="h2 flow">Seven days off the <em>grid</em>, on the <em>glacier</em>.</h2>
+    <p class="lede flow">
       Once a year the cohort swaps Fontainebleau for altitude. Everyone on the same mountain,
       in the same village, on the same lift pass — beginners included. You do not need to be
       good at skiing. You need to be there.
     </p>
 
     <div class="stats">
-      <div class="stat reveal"><b data-cfg="statPeople"></b><span>people on the mountain</span></div>
-      <div class="stat reveal"><b data-cfg="statKm"></b><span>of linked pistes</span></div>
-      <div class="stat reveal"><b data-cfg="statLifts"></b><span>lifts, one pass</span></div>
-      <div class="stat reveal"><b data-cfg="statNights"></b><span>nights, zero regrets</span></div>
+      <div class="stat flow" style="--k:0"><b data-cfg="statPeople" data-count></b><span>people on the mountain</span></div>
+      <div class="stat flow" style="--k:1"><b data-cfg="statKm"     data-count></b><span>of linked pistes</span></div>
+      <div class="stat flow" style="--k:2"><b data-cfg="statLifts"  data-count></b><span>lifts, one pass</span></div>
+      <div class="stat flow" style="--k:3"><b data-cfg="statNights" data-count></b><span>nights, zero regrets</span></div>
     </div>
   </div>
 </section>
 
-<!-- ══ week ══ -->
-<section class="sec sec--alt" id="week">
-  <div class="wrap">
-    <p class="eyebrow reveal">02 — The week</p>
-    <h2 class="h2 reveal">Roughly how it goes.</h2>
-    <p class="lede lede--tight reveal">Indicative. The mountain decides the rest.</p>
-  </div>
+<!-- ══════════════ THE WEEK ══════════════
+     Pinned: vertical scrolling is remapped onto horizontal travel, so the
+     week plays out as one continuous move instead of five separate reveals. -->
+<section class="week" id="week" data-pin="week">
+  <div class="week__stage">
+    <div class="wrap week__head">
+      <p class="eyebrow">02 — The week</p>
+      <h2 class="h2">Roughly how it goes.</h2>
+      <p class="lede lede--tight">Indicative. The mountain decides the rest.</p>
+      <div class="week__meter" aria-hidden="true"><i id="weekMeter"></i></div>
+    </div>
 
-  <div class="rail reveal" role="list">
-    <article class="card" role="listitem" style="--i:0">
-      <span class="card__day">Sat</span>
-      <h3>Coaches roll out</h3>
-      <p>Fontainebleau at dawn, Alps by evening. Sleep on the bus — you will need it.</p>
-    </article>
-    <article class="card" role="listitem" style="--i:1">
-      <span class="card__day">Sun</span>
-      <h3>First lifts</h3>
-      <p>Passes collected, groups sorted by level, beginners into lessons. First run before noon.</p>
-    </article>
-    <article class="card" role="listitem" style="--i:2">
-      <span class="card__day">Mon–Thu</span>
-      <h3>Ski. Eat. Repeat.</h3>
-      <p>Full days on the snow, chalet dinners, and an après programme nobody will admit to remembering.</p>
-    </article>
-    <article class="card" role="listitem" style="--i:3">
-      <span class="card__day">Fri</span>
-      <h3>Summit day + gala</h3>
-      <p>Top-station photo with the whole cohort, then the closing night. Dress code: questionable.</p>
-    </article>
-    <article class="card" role="listitem" style="--i:4">
-      <span class="card__day">Sat</span>
-      <h3>The long drive back</h3>
-      <p>Silence, sunburn, and a group chat that will not recover for months.</p>
-    </article>
+    <div class="track" id="weekTrack" role="list">
+      <article class="wcard" role="listitem" style="--k:0">
+        <span class="wcard__day">Sat</span>
+        <h3>Coaches roll out</h3>
+        <p>Fontainebleau at dawn, Alps by evening. Sleep on the bus — you will need it.</p>
+      </article>
+      <article class="wcard" role="listitem" style="--k:1">
+        <span class="wcard__day">Sun</span>
+        <h3>First lifts</h3>
+        <p>Passes collected, groups sorted by level, beginners into lessons. First run before noon.</p>
+      </article>
+      <article class="wcard" role="listitem" style="--k:2">
+        <span class="wcard__day">Mon–Thu</span>
+        <h3>Ski. Eat. Repeat.</h3>
+        <p>Full days on the snow, chalet dinners, and an après programme nobody will admit to remembering.</p>
+      </article>
+      <article class="wcard" role="listitem" style="--k:3">
+        <span class="wcard__day">Fri</span>
+        <h3>Summit day + gala</h3>
+        <p>Top-station photo with the whole cohort, then the closing night. Dress code: questionable.</p>
+      </article>
+      <article class="wcard" role="listitem" style="--k:4">
+        <span class="wcard__day">Sat</span>
+        <h3>The long drive back</h3>
+        <p>Silence, sunburn, and a group chat that will not recover for months.</p>
+      </article>
+    </div>
   </div>
 </section>
 
 <!-- ══ price ══ -->
 <section class="sec" id="price">
   <div class="wrap">
-    <p class="eyebrow reveal">03 — The damage</p>
-    <h2 class="h2 reveal">What it costs.</h2>
+    <p class="eyebrow flow">03 — The damage</p>
+    <h2 class="h2 flow">What it costs.</h2>
 
     <div class="tiers">
-      <div class="tier reveal">
+      <div class="tier flow" style="--k:0">
         <h3>Early bird</h3>
         <p class="tier__price"><span data-cfg="priceEarly"></span></p>
         <p class="tier__when">Until <span data-cfg="earlyDeadline"></span></p>
-        <ul>
-          <li>Coach return</li><li>7 nights, shared room</li><li>6-day lift pass</li><li>Half board</li>
-        </ul>
+        <ul><li>Coach return</li><li>7 nights, shared room</li><li>6-day lift pass</li><li>Half board</li></ul>
       </div>
-      <div class="tier tier--hot reveal">
+      <div class="tier tier--hot flow" style="--k:1">
         <span class="tier__flag">Most taken</span>
         <h3>Standard</h3>
         <p class="tier__price"><span data-cfg="priceStd"></span></p>
         <p class="tier__when">Until spots run out</p>
-        <ul>
-          <li>Everything in Early bird</li><li>Group ski lessons</li><li>Gala night</li><li>Après programme</li>
-        </ul>
+        <ul><li>Everything in Early bird</li><li>Group ski lessons</li><li>Gala night</li><li>Après programme</li></ul>
       </div>
-      <div class="tier reveal">
+      <div class="tier flow" style="--k:2">
         <h3>Gear add-on</h3>
         <p class="tier__price"><span data-cfg="priceGear"></span></p>
         <p class="tier__when">Optional</p>
-        <ul>
-          <li>Skis or board + boots</li><li>Helmet</li><li>Poles</li><li>Swap-outs on site</li>
-        </ul>
+        <ul><li>Skis or board + boots</li><li>Helmet</li><li>Poles</li><li>Swap-outs on site</li></ul>
       </div>
     </div>
-    <p class="finePrint reveal">
+    <p class="finePrint flow">
       Indicative pricing, per person. Flights not included. Final figures confirmed with the
       operator before deposits open.
     </p>
@@ -199,43 +205,33 @@
 <!-- ══ faq ══ -->
 <section class="sec sec--alt" id="faq">
   <div class="wrap wrap--narrow">
-    <p class="eyebrow reveal">04 — Before you ask</p>
-    <h2 class="h2 reveal">FAQ.</h2>
+    <p class="eyebrow flow">04 — Before you ask</p>
+    <h2 class="h2 flow">FAQ.</h2>
 
-    <details class="qa reveal"><summary>I have never skied. Genuinely never.</summary>
+    <details class="qa flow" style="--k:0"><summary>I have never skied. Genuinely never.</summary>
       <p>Perfect. A large chunk of the cohort hasn't either. Beginner lessons run every morning and
       the beginner group is the loudest group on the trip.</p></details>
-
-    <details class="qa reveal"><summary>Do I need my own gear?</summary>
+    <details class="qa flow" style="--k:1"><summary>Do I need my own gear?</summary>
       <p>No. Take the gear add-on and everything is waiting for you at the shop in the village.
       Bring your own gloves, goggles and thermals — those are personal.</p></details>
-
-    <details class="qa reveal"><summary>Can I bring a partner or a friend from outside INSEAD?</summary>
+    <details class="qa flow" style="--k:2"><summary>Can I bring a partner or a friend from outside INSEAD?</summary>
       <p>Usually yes, subject to spots. Flag it on the interest form so the organisers can count beds.</p></details>
-
-    <details class="qa reveal"><summary>What if I can only come for part of the week?</summary>
+    <details class="qa flow" style="--k:3"><summary>What if I can only come for part of the week?</summary>
       <p>Say so on the form. Partial stays are handled case by case and priced accordingly.</p></details>
-
-    <details class="qa reveal"><summary>Is this confirmed?</summary>
+    <details class="qa flow" style="--k:4"><summary>Is this confirmed?</summary>
       <p>Not yet. This page exists to size demand. Registering interest costs nothing and commits
       you to nothing — it just tells the organisers how many beds to hold.</p></details>
   </div>
 </section>
 
 <!-- ══ signup ══ -->
-<section class="sec signup" id="signup">
+<section class="sec signup" id="signup" data-glow>
   <div class="wrap wrap--narrow">
-    <p class="eyebrow reveal">05 — Get on the list</p>
-    <h2 class="h2 reveal">Register interest.</h2>
-    <p class="lede reveal">
-      No payment, no commitment. It takes thirty seconds and it decides whether this happens.
-    </p>
-    <a class="btn btn--lg btn--block reveal" id="signupBtn" href="#" target="_blank" rel="noopener">
-      Open the interest form
-    </a>
-    <p class="finePrint reveal">
-      Questions: <a id="mailLink" href="#"><span data-cfg="contactEmail"></span></a>
-    </p>
+    <p class="eyebrow flow">05 — Get on the list</p>
+    <h2 class="h2 flow">Register interest.</h2>
+    <p class="lede flow">No payment, no commitment. It takes thirty seconds and it decides whether this happens.</p>
+    <a class="btn btn--lg btn--block flow" id="signupBtn" href="#" target="_blank" rel="noopener">Open the interest form</a>
+    <p class="finePrint flow">Questions: <a id="mailLink" href="#"><span data-cfg="contactEmail"></span></a></p>
   </div>
 </section>
 
@@ -245,6 +241,11 @@
     <p class="foot__dis">
       Unofficial. Not an INSEAD publication. Dates, resort and pricing on this page are
       placeholders until the organising committee confirms them.
+    </p>
+    <p class="foot__credit">
+      Hero footage:
+      <a href="https://commons.wikimedia.org/wiki/File:Skiing_in_Engelberg_Titlis.webm">Skiing in Engelberg Titlis</a>
+      by Amada44, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>, via Wikimedia Commons.
     </p>
   </div>
 </footer>
