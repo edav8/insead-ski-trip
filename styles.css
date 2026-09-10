@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════
    INSEAD SKI — teaser page
 
-   Palette: deep pine ground, mint accent, blue CTA. The CTA carries
-   the only blue on the page, which is what keeps it separable from
-   the mint — the two are close in temperature, so the button leans
-   on being the one large SOLID fill rather than on hue alone.
-   Its label is dark, not white: white on this blue is 2.6:1.
+   Palette: deep pine ground, mint accent, dark navy CTA with a
+   lighter rim. The CTA carries the only blue on the page. Because
+   the fill is dark it barely separates from the ground on its own,
+   so the button is defined by its rim and its white label rather
+   than by the fill — and every glow or border derived from the CTA
+   uses --cta-edge, never --cta.
    Change the six tokens below and most of the page follows. Note the
    exceptions before recolouring: translucent surfaces, borders and
    glows are written as rgba() of the same channels because a token
@@ -27,7 +28,12 @@
 :root{
   --night:#06120d; --night-2:#0a1b13;
   --ink:#e8f4ec; --muted:#8faa9a;
-  --accent:#4fd99b; --cta:#4da6ff;
+  --accent:#4fd99b;
+  /* Dark navy fill, lighter rim. The fill is only 1.8:1 against the
+     ground, so the button's shape is carried by --cta-edge; every glow
+     and border derived from the CTA uses the edge, not the fill, or it
+     disappears into a near-black page. */
+  --cta:#1e3a8a; --cta-edge:#5b8def;
   --line:rgba(143,170,154,.18);
   --wrap:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -54,7 +60,7 @@ a{ color:inherit }
 .progress i{
   display:block; height:100%; width:100%; transform-origin:0 50%;
   transform:scaleX(var(--sp,0));
-  background:linear-gradient(90deg,var(--accent),var(--cta));
+  background:linear-gradient(90deg,var(--accent),var(--cta-edge));
 }
 
 #snow{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; opacity:.75 }
@@ -90,10 +96,10 @@ a{ color:inherit }
   display:inline-flex; align-items:center; justify-content:center; padding:var(--pad);
   font-family:var(--body); font-weight:600; font-size:.88rem; letter-spacing:.02em;
   text-decoration:none; white-space:nowrap;
-  color:#04121f; background:var(--cta); border:1px solid var(--cta); border-radius:100px;
+  color:#fff; background:var(--cta); border:1px solid var(--cta-edge); border-radius:100px;
   transition:transform .25s var(--ease), box-shadow .35s var(--ease);
 }
-.btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(77,166,255,.6) }
+.btn:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(91,141,239,.55) }
 .btn:active{ transform:translateY(0) }
 .btn--sm{ --pad:.5rem .95rem; font-size:.8rem }
 .btn--lg{ --pad:.95rem 1.9rem; font-size:.95rem }
@@ -129,7 +135,7 @@ a{ color:inherit }
   position:absolute; inset:0; z-index:-1;
   background:
     radial-gradient(120% 80% at 50% 100%, rgba(79,217,155,.16) 0%, transparent 60%),
-    radial-gradient(80% 60% at 80% 12%, rgba(77,166,255,.13) 0%, transparent 62%),
+    radial-gradient(80% 60% at 80% 12%, rgba(91,141,239,.16) 0%, transparent 62%),
     linear-gradient(180deg,#040e09 0%,#08170f 46%,#0e2a1c 100%);
 }
 .hero__sky::after{
@@ -323,11 +329,11 @@ a{ color:inherit }
   position:relative; padding:1.9rem 1.6rem; border:1px solid var(--line); border-radius:18px;
   background:linear-gradient(165deg,rgba(232,244,236,.05),rgba(232,244,236,.01));
 }
-.tier--hot{ border-color:rgba(77,166,255,.5); background:linear-gradient(165deg,rgba(77,166,255,.1),rgba(232,244,236,.015)) }
+.tier--hot{ border-color:rgba(91,141,239,.55); background:linear-gradient(165deg,rgba(30,58,138,.32),rgba(232,244,236,.015)) }
 .tier__flag{
   position:absolute; top:-.7rem; left:1.6rem; padding:.2rem .6rem;
   font-size:.63rem; letter-spacing:.16em; text-transform:uppercase;
-  color:#04121f; background:var(--cta); border-radius:99px;
+  color:#fff; background:var(--cta); border-radius:99px;
 }
 .tier h3{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:1.35rem; margin:0 0 .5rem }
 .tier__price{ font-family:var(--display); font-size:2.5rem; line-height:1; margin:0 0 .25rem; color:var(--accent) }
@@ -356,7 +362,7 @@ a{ color:inherit }
 .signup{ background:var(--night); text-align:center; overflow:hidden }
 .signup::before{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(90% 120% at 50% 100%,rgba(77,166,255,.22),transparent 62%);
+  background:radial-gradient(90% 120% at 50% 100%,rgba(91,141,239,.22),transparent 62%);
   opacity:var(--g,1);
 }
 .signup .wrap{ position:relative }
