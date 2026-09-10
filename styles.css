@@ -471,6 +471,17 @@ a{ color:inherit }
   .nav__mark{ font-size:1rem }
 
   .h2{ max-width:none }
+
+  /* The day label's 140px minimum plus its slot column overflowed a
+     390px screen and squeezed the actual schedule text to 94px. Stack
+     the label above its slots instead — the label is short, the slots
+     are the content. */
+  .cal__day{ grid-template-columns:1fr; gap:.9rem; padding:1.3rem 1.2rem }
+  .cal__head{ display:flex; align-items:center; gap:.65rem; flex-wrap:wrap }
+  .cal__head h3{ margin:0 }
+  .cal__slots li{ grid-template-columns:3.7rem 1fr; gap:.7rem }
+  .tl{ grid-template-columns:4.2rem 1fr; gap:.9rem }
+  .tl__when b{ font-size:1.15rem }
   .wcard{ padding:1.5rem 1.3rem }
   .tier{ padding:1.6rem 1.3rem }
   .qa summary{ padding-block:1.15rem }   /* comfortable tap target */

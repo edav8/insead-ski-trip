@@ -25,6 +25,8 @@ number or name on the page is read from it:
 | `signupUrl` | Google Form / Typeform URL for the big button |
 | `contactEmail` | Footer link, and the button's fallback |
 | `video720`, `video480`, `videoPoster` | Hero footage (see below) |
+| `events` | The run-up timeline (see below) |
+| `schedule` | The trip week's day-by-day calendar |
 
 If `signupUrl` is left empty the main button becomes a pre-filled `mailto:` to
 `contactEmail` instead — so the page is useful before the form exists.
@@ -60,6 +62,27 @@ styles.css    the whole design system (tokens at the top of the file)
 script.js     CONFIG block + countdown, snowfall, parallax, scroll reveals
 assets/       put photos here and reference them from index.html
 ```
+
+## Events and the calendar
+
+Both sections are rendered from arrays in `CONFIG`, so every date on the site
+lives in one block rather than being scattered through the markup.
+
+`events` is the run-up: each entry is `{ date, title, where, note }` with an
+ISO `date`. **Status is derived, not stored** — anything before today dims
+itself and is tagged "Passed", and the first future entry is tagged "Next up"
+automatically. That means the list stays correct on its own as the term goes
+on; nobody has to remember to prune it. Add or remove entries freely, but keep
+them in date order, since the "Next up" mark goes to the first future one in
+array order.
+
+`schedule` is the trip week: each entry is `{ day, tag, items }` where `items`
+is a list of `{ t, w }` (time, what). Days are free-form strings, so a block
+like "Mon 4 – Thu 7 Jan" works as one row.
+
+Both render before the scroll engine starts, which is what lets their
+generated elements take part in the scroll-linked reveals. If you move that
+code, keep it above the engine in `script.js`.
 
 ## The hero video
 
