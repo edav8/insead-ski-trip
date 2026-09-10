@@ -156,7 +156,7 @@ a{ color:inherit }
 }
 
 .hero__logo{
-  display:block; width:min(clamp(150px,24vw,290px),34vh); height:auto;
+  display:block; width:min(clamp(150px,24vw,290px),26vh); height:auto;
   margin:0 auto clamp(.7rem,2vh,1.6rem);
 }
 .kicker{ font-size:.75rem; letter-spacing:.28em; text-transform:uppercase; color:var(--glacier); margin:0 0 clamp(.7rem,2vh,1.6rem) }
@@ -167,7 +167,7 @@ a{ color:inherit }
   /* capped by viewport height too: three lines of display type is the
      tallest block in the hero, and a width-only clamp pushed the CTA
      off the bottom of an 800px laptop screen */
-  font-size:min(clamp(3.1rem,12vw,9.5rem),15vh);
+  font-size:min(clamp(3.1rem,12vw,9.5rem),13vh);
   line-height:.86; letter-spacing:-.015em;
   margin:0 0 clamp(.7rem,2vh,1.6rem); text-transform:uppercase;
 }
@@ -397,11 +397,23 @@ a{ color:inherit }
   .count__unit{ padding:.5rem .4rem .4rem }
   .scrollcue{ display:none }
 }
-/* Below this the screen genuinely cannot hold everything, so drop the
-   least load-bearing line rather than pushing the CTA off the bottom. */
+/* Below this the screen genuinely cannot hold everything. Things are
+   dropped in order of how little they carry: the reassurance note, then
+   the countdown. The mark, the headline and the CTA never go. */
 @media (max-height:620px){
   .hero__note{ display:none }
-  .hero__sub{ margin-bottom:.9rem }
+  .hero__sub{ font-size:.86rem; margin-bottom:.9rem }
+  .hero__title{ font-size:min(clamp(2.5rem,11vw,9.5rem),13vh) }
+  .count__unit{ min-width:clamp(58px,14vw,78px) }
+  .count__unit b{ font-size:1.35rem }
+}
+/* Landscape on a phone. Keeping the countdown here would push the
+   button off-screen, and a CTA you cannot reach is worse than a
+   countdown you cannot see. */
+@media (max-height:450px){
+  .count{ display:none }
+  .hero__logo{ width:min(clamp(110px,16vw,180px),18vh) }
+  .hero__sub{ margin-bottom:.7rem }
 }
 
 /* Touch devices get no hover states — they stick on tap otherwise —
