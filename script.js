@@ -228,7 +228,9 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
   const setErr = (el, msg) => {
     const f = fieldOf(el);
     f.classList.toggle("is-bad", !!msg);
-    const slot = f.querySelector(`[data-err-for="${el.id}"]`);
+    // radios inside the day picker carry no id of their own; the error slot
+    // belongs to their fieldset, so fall back to that
+    const slot = f.querySelector(`[data-err-for="${el.id || f.id}"]`);
     if (slot) slot.textContent = msg || "";
     if (el.tagName !== "FIELDSET") {
       if (msg) el.setAttribute("aria-invalid", "true");

@@ -22,14 +22,27 @@ number or name on the page is read from it:
 | `datesLong` | Human-readable dates in the hero |
 | `statPeople`, `statKm`, `statLifts`, `statNights` | The four stat tiles |
 | `priceEarly`, `priceStd`, `priceGear`, `earlyDeadline` | Pricing tiers |
-| `signupUrl` | Google Form / Typeform URL for the big button |
-| `contactEmail` | Footer link, and the button's fallback |
+| `formEndpoint` | **Where the on-page form sends answers.** See [SETUP-FORM.md](SETUP-FORM.md) |
+| `arrivalDates`, `transportOptions`, `materialOptions` | The choices the form offers |
+| `returnNote` | The fixed return leg, shown under the day picker |
+| `contactEmail` | Footer link, and the form's fallback while `formEndpoint` is empty |
 | `video720`, `video480`, `videoPoster` | Hero footage (see below) |
 | `events` | The run-up timeline (see below) |
 | `schedule` | The trip week's day-by-day calendar |
 
-If `signupUrl` is left empty the main button becomes a pre-filled `mailto:` to
-`contactEmail` instead — so the page is useful before the form exists.
+## The interest form
+
+The form's one real job is to learn **which day each person would arrive** —
+everyone leaves together on the overnight coach on Sat 9 Jan, so arrival is the
+only variable. It also asks about transport and equipment rental, and it will
+not submit without the "I'm seriously considering coming" box ticked, because
+the committee books beds and coach seats on these numbers.
+
+Static hosting can't store answers, so each submission is POSTed to
+`formEndpoint`. **Until that's set, the form opens a pre-filled email
+instead** — never a dead button. [SETUP-FORM.md](SETUP-FORM.md) walks through
+getting the answers into a Google Sheet you own (then *File → Download →
+Excel*), or into Formspree if you'd rather.
 
 The day-by-day cards and the FAQ are plain HTML in `index.html`; edit them there.
 
