@@ -439,6 +439,91 @@ a{ color:inherit }
 .signup .lede{ margin-inline:auto }
 .signup .finePrint{ margin:1.2rem auto 0 }
 
+/* ── interest form ─────────────────────────────────────── */
+.form{ text-align:left; margin-top:2rem }
+.field{ margin-bottom:1.1rem }
+.field label{
+  display:block; margin-bottom:.4rem;
+  font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+}
+.field .opt{ letter-spacing:.06em; text-transform:none; opacity:.6 }
+.field input[type=text],
+.field input[type=email],
+.field select,
+.field textarea{
+  width:100%; padding:.8rem .9rem;
+  font-family:var(--body); font-size:.95rem; color:var(--ink);
+  background:rgba(232,244,236,.045);
+  border:1px solid var(--line); border-radius:12px;
+  transition:border-color .25s var(--ease), background .25s var(--ease);
+}
+.field textarea{ resize:vertical; min-height:5.2rem }
+.field select{ appearance:none; cursor:pointer;
+  /* caret drawn in the accent, since a native arrow renders light-on-light */
+  background-image:linear-gradient(45deg,transparent 50%,var(--accent) 50%),
+                   linear-gradient(135deg,var(--accent) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 55%, calc(100% - 14px) 55%;
+  background-size:6px 6px, 6px 6px; background-repeat:no-repeat;
+  padding-right:2.6rem;
+}
+.field select option{ background:var(--night-2); color:var(--ink) }
+.field :focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+.field input:focus, .field select:focus, .field textarea:focus{
+  border-color:var(--accent); background:rgba(232,244,236,.07); outline:none;
+}
+.field input::placeholder, .field textarea::placeholder{ color:var(--muted); opacity:.55 }
+
+.field--row{ display:flex; gap:1.4rem; flex-wrap:wrap }
+.check{ display:flex; align-items:center; gap:.55rem; cursor:pointer;
+  font-size:.9rem; color:var(--ink); text-transform:none; letter-spacing:0 }
+.check input{ width:1.05rem; height:1.05rem; accent-color:var(--accent); cursor:pointer }
+.check span{ color:var(--muted) }
+
+/* day cards: one tap picks a day, the chosen one lights up */
+fieldset.field{ border:0; padding:0; margin:0 0 1.1rem; min-width:0 }
+.field legend{ display:block; margin-bottom:.6rem; padding:0;
+  font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+.days{ display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:.55rem }
+.day{ position:relative; display:flex; flex-direction:column; align-items:center; gap:.1rem;
+  padding:.8rem .4rem .7rem; text-align:center; cursor:pointer;
+  border:1px solid var(--line); border-radius:12px; background:rgba(232,244,236,.04);
+  transition:border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease) }
+.day input{ position:absolute; inset:0; opacity:0; cursor:pointer; margin:0 }
+.day__dow{ font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted) }
+.day__date{ font-family:var(--display); font-size:1.35rem; line-height:1.1; color:var(--ink) }
+.day__nights{ font-size:.7rem; color:var(--muted); margin-top:.15rem }
+.day:hover{ border-color:rgba(79,217,155,.45) }
+.day:has(input:checked){ border-color:var(--accent); background:rgba(79,217,155,.12); transform:translateY(-2px) }
+.day:has(input:checked) .day__dow, .day:has(input:checked) .day__nights{ color:var(--accent) }
+.day:has(input:focus-visible){ outline:2px solid var(--accent); outline-offset:2px }
+.field.is-bad .day{ border-color:#ff9b8a }
+
+/* the arrival day is the one answer that matters; let it look like it */
+.field--key{ padding:1rem 1.1rem 1.05rem; border:1px solid rgba(79,217,155,.35) !important;
+  border-radius:14px; background:rgba(79,217,155,.05) }
+.field__hint{ margin:.45rem 0 0; font-size:.8rem; color:var(--muted); line-height:1.5 }
+.field--serious{ margin-top:1.4rem }
+.check--serious{ align-items:flex-start }
+.check--serious input{ margin-top:.2rem; flex:none }
+.check--serious span{ color:var(--ink); font-size:.88rem; line-height:1.5 }
+.field.is-bad .check--serious span{ color:#ff9b8a }
+
+/* errors are announced next to the field, never only by colour */
+.field__err{ margin:.35rem 0 0; font-size:.78rem; color:#ff9b8a; min-height:0 }
+.field.is-bad input, .field.is-bad select{ border-color:#ff9b8a }
+
+/* Off-screen rather than display:none — a bot reading the DOM still sees
+   a fillable input, which is the whole point of the trap. */
+.hp{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden }
+
+.form__status{ margin:.9rem 0 0; font-size:.88rem; min-height:1.2em }
+.form__status.is-ok{ color:var(--accent) }
+.form__status.is-bad{ color:#ff9b8a }
+.form__status.is-busy{ color:var(--muted) }
+.form__privacy{ margin:.9rem 0 0; font-size:.74rem; color:var(--muted); opacity:.8 }
+.form.is-sent .field, .form.is-sent button{ display:none }
+#formSubmit[disabled]{ opacity:.6; pointer-events:none }
+
 /* footer */
 .foot{ position:relative; z-index:3; border-top:1px solid var(--line); background:var(--night-2); padding:2.5rem 0; font-size:.82rem; color:var(--muted) }
 .foot__logo{ display:block; height:34px; width:auto; opacity:.4; margin-bottom:1.1rem }

@@ -12,14 +12,14 @@ const CONFIG = {
   // ── identity ───────────────────────────────────────────────────
   cohort:     "MIM28",
   yearShort:  "28",                        // shown after the wordmark
-  resort:     "Val Thorens",               // PLACEHOLDER
+  resort:     "Les Menuires",
   country:    "French Alps",               // PLACEHOLDER
-  altitude:   "2,300 m",                   // PLACEHOLDER
+  altitude:   "1,850 m",                   // PLACEHOLDER — Les Menuires village
 
   // ── dates ──────────────────────────────────────────────────────
   // startISO drives the countdown. Local time, 24h, with UTC offset.
   startISO:   "2027-01-02T08:00:00+01:00", // first week of January 2027
-  datesLong:  "Sat 2 – Sat 9 January 2027",
+  datesLong:  "Sat 2 – Sun 10 January 2027",
 
   // ── scale ──────────────────────────────────────────────────────
   statPeople: "120+",                      // PLACEHOLDER
@@ -35,8 +35,43 @@ const CONFIG = {
 
   // ── calls to action ────────────────────────────────────────────
   spotsNote:    "Nothing is confirmed yet — this page exists to count hands.",
-  signupUrl:    "",                        // Google Form / Typeform URL
+  // Where the on-page form POSTs. Paste the URL from whichever backend
+  // you set up (see SETUP-FORM.md). Leave it empty and the form still
+  // works — it falls back to opening a pre-filled email instead, so the
+  // page is never broken while this is being arranged.
+  formEndpoint: "",
+  signupUrl:    "",                        // external form, if you'd rather link out
   contactEmail: "elisabeth.vandehout@insead.edu",
+
+  // ── arrival options ────────────────────────────────────────────
+  // The whole point of the form: everyone LEAVES together, but people
+  // join on different days, so the only variable is the arrival date.
+  // `nights` is counted to the morning of Sun 10 Jan.
+  arrivalDates: [
+    { value: "2027-01-02", label: "Sat 2 Jan", nights: 7 },
+    { value: "2027-01-03", label: "Sun 3 Jan", nights: 6 },
+    { value: "2027-01-04", label: "Mon 4 Jan", nights: 5 },
+    { value: "2027-01-05", label: "Tue 5 Jan", nights: 4 },
+    { value: "2027-01-06", label: "Wed 6 Jan", nights: 3 },
+  ],
+  returnNote: "Everyone leaves Les Menuires on the evening of Sat 9 Jan on an " +
+              "overnight coach, arriving back at Fontainebleau on the morning " +
+              "of Sun 10 Jan.",
+
+  // Rental grades as the shop quotes them. Platinum is deliberately not
+  // offered — it is race kit nobody on this trip needs.
+  materialOptions: [
+    "No — I have my own",
+    "Bronze — skis, boots, poles",
+    "Silver — better skis, boots, poles",
+    "Gold — top-range skis, boots, poles",
+  ],
+  transportOptions: [
+    "Coach both ways",
+    "Coach on the way back only",
+    "Making my own way both ways",
+    "Not sure yet",
+  ],
 
   // ── run-up events ──────────────────────────────────────────────
   // ISO dates. Anything in the past dims itself and the next one up is
@@ -80,15 +115,17 @@ const CONFIG = {
       {t:"09:00", w:"Lifts open — full days on the snow"},
       {t:"16:30", w:"Après at the bottom station"},
       {t:"20:00", w:"Chalet dinner, then whatever happens next"} ]},
-    { day:"Fri 8 Jan", tag:"Summit + gala", items:[
-      {t:"09:00", w:"Last full day on the snow"},
+    { day:"Fri 8 Jan", tag:"Gala", items:[
+      {t:"09:00", w:"Full day on the snow"},
       {t:"14:00", w:"Cohort photo at the top station"},
-      {t:"16:30", w:"Lifts close, gear returned"},
       {t:"20:30", w:"Gala dinner and closing night"} ]},
-    { day:"Sat 9 Jan", tag:"Home", items:[
-      {t:"08:00", w:"Breakfast, chalets emptied"},
-      {t:"09:30", w:"Coaches leave"},
-      {t:"22:00", w:"Back in Fontainebleau, roughly"} ]},
+    { day:"Sat 9 Jan", tag:"Last day + overnight coach", items:[
+      {t:"09:00", w:"Last day on the snow"},
+      {t:"16:30", w:"Lifts close, rental gear returned, chalets emptied"},
+      {t:"19:00", w:"Dinner in the village"},
+      {t:"21:00", w:"Overnight coach leaves Les Menuires"} ]},
+    { day:"Sun 10 Jan", tag:"Home", items:[
+      {t:"07:00", w:"Arrive Fontainebleau, roughly. Sleep."} ]},
   ],
 
   // ── hero footage ───────────────────────────────────────────────
@@ -132,15 +169,152 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
     `Name:\nSki level (never / beginner / intermediate / advanced):\n` +
     `Gear rental needed (y/n):\nBringing a +1 (y/n):\n\nThanks!`
   );
-  const btn = $("#signupBtn");
-  if (CONFIG.signupUrl) {
-    btn.href = CONFIG.signupUrl;
-  } else {
-    btn.href = `mailto:${CONFIG.contactEmail}?subject=${subject}&body=${body}`;
-    btn.removeAttribute("target");
-    btn.textContent = "Email the organisers";
-  }
+  window.MAILTO = `mailto:${CONFIG.contactEmail}?subject=${subject}&body=${body}`;
   $("#mailLink").href = `mailto:${CONFIG.contactEmail}`;
+}
+
+/* ── 1a. the interest form ───────────────────────────────
+   Static hosting has no server, so submissions go to whatever endpoint
+   CONFIG.formEndpoint names (Google Apps Script, Formspree, Microsoft
+   Power Automate — all accept the same FormData POST). Sent as FormData
+   rather than JSON deliberately: it is a "simple request", so the
+   browser skips the CORS preflight that several of those backends do
+   not answer. */
+{
+  const form   = $("#interestForm");
+  const status = $("#formStatus");
+  const submit = $("#formSubmit");
+
+  // Selects are built from CONFIG so the form can never offer a day or a
+  // rental grade the rest of the page does not describe.
+  const fill = (sel, opts, placeholder) => {
+    sel.innerHTML = `<option value="">${placeholder}</option>` +
+      opts.map(o => typeof o === "string"
+        ? `<option>${o}</option>`
+        : `<option value="${o.value}">${o.label} — ${o.nights} nights</option>`).join("");
+  };
+  // Arrival is a row of big tappable cards, not a dropdown: it is the one
+  // answer that matters and a <select> is the worst control on a phone.
+  $("#dayPicker").innerHTML = CONFIG.arrivalDates.map((d, i) => {
+    const [dow, ...rest] = d.label.split(" ");
+    return `<label class="day">
+      <input type="radio" name="arrival" value="${d.value}" ${i === 0 ? "" : ""}>
+      <span class="day__dow">${dow}</span>
+      <span class="day__date">${rest.join(" ")}</span>
+      <span class="day__nights">${d.nights} nights</span>
+    </label>`;
+  }).join("");
+  fill($("#f-transport"), CONFIG.transportOptions, "How are you getting there?");
+  fill($("#f-material"),  CONFIG.materialOptions,  "Do you need to rent?");
+
+  // The return leg is fixed for everyone, so say so right under the choice.
+  const hint = $("#arrivalHint");
+  const arrivalValue = () => form.querySelector('input[name="arrival"]:checked')?.value || "";
+  const showHint = () => {
+    const pick = CONFIG.arrivalDates.find(d => d.value === arrivalValue());
+    hint.textContent = pick
+      ? `${pick.label} to Sun 10 Jan — ${pick.nights} nights. ${CONFIG.returnNote}`
+      : CONFIG.returnNote;
+  };
+  showHint();
+  $("#dayPicker").addEventListener("change", showHint);
+
+  const say = (msg, kind) => {
+    status.textContent = msg;
+    status.className = "form__status" + (kind ? " is-" + kind : "");
+  };
+
+  const fieldOf = el => el.closest(".field");
+  const setErr = (el, msg) => {
+    const f = fieldOf(el);
+    f.classList.toggle("is-bad", !!msg);
+    const slot = f.querySelector(`[data-err-for="${el.id}"]`);
+    if (slot) slot.textContent = msg || "";
+    if (el.tagName !== "FIELDSET") {
+      if (msg) el.setAttribute("aria-invalid", "true");
+      else el.removeAttribute("aria-invalid");
+    }
+  };
+
+  const validate = () => {
+    let firstBad = null;
+    for (const el of [$("#f-name"), $("#f-email"), $("#f-transport"), $("#f-material")]) {
+      let msg = "";
+      const v = el.value.trim();
+      if (!v) msg = el.tagName === "SELECT" ? "Pick one." : "Required.";
+      else if (el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v))
+        msg = "That doesn't look like an email address.";
+      setErr(el, msg);
+      if (msg && !firstBad) firstBad = el;
+    }
+    const arr = $("#f-arrival");
+    const aMsg = arrivalValue() ? "" : "Pick the day you'd arrive.";
+    setErr(arr, aMsg);
+    if (aMsg && !firstBad) firstBad = arr.querySelector("input");
+    const serious = $("#f-serious");
+    const sMsg = serious.checked ? "" : "Please confirm — the committee books on these numbers.";
+    setErr(serious, sMsg);
+    if (sMsg && !firstBad) firstBad = serious;
+    return firstBad;
+  };
+
+  // clear a field's error as soon as the visitor fixes it
+  for (const el of form.querySelectorAll("input,select,textarea")) {
+    const clear = () => { if (fieldOf(el)?.classList.contains("is-bad")) setErr(el, ""); };
+    el.addEventListener("input", clear);
+    el.addEventListener("change", clear);
+  }
+
+  form.addEventListener("submit", async ev => {
+    ev.preventDefault();
+
+    const bad = validate();
+    if (bad) { say("Check the highlighted fields.", "bad"); bad.focus(); return; }
+
+    // Honeypot. Silently pretend success: telling a bot it failed only
+    // teaches it to try again.
+    if (form.website.value) { form.classList.add("is-sent"); say("Thanks — you're on the list.", "ok"); return; }
+
+    const data = new FormData(form);
+    data.delete("website");
+    const pick = CONFIG.arrivalDates.find(d => d.value === arrivalValue());
+    if (pick) { data.set("arrival", pick.label); data.append("arrival_iso", pick.value); data.append("nights", pick.nights); }
+    data.set("serious", "yes");
+    data.append("submitted_at", new Date().toISOString());
+    data.append("trip", `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.datesLong}`);
+
+    if (!CONFIG.formEndpoint) {
+      // No backend wired up yet: hand the answers to the mail client so
+      // nothing the visitor typed is lost.
+      say("Opening your email app…", "busy");
+      location.href = window.MAILTO;
+      setTimeout(() => say("If nothing opened, email us using the link below.", "bad"), 2500);
+      return;
+    }
+
+    submit.disabled = true;
+    say("Sending…", "busy");
+    try {
+      const res = await fetch(CONFIG.formEndpoint, {
+        method: "POST", body: data, headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      form.classList.add("is-sent");
+      say("Thanks — you're on the list. The committee will be in touch.", "ok");
+    } catch (err) {
+      // Some endpoints accept the POST but refuse to let us read the
+      // reply. Retry opaquely: the row still lands, we just cannot
+      // confirm it, so say exactly that rather than claiming success.
+      try {
+        await fetch(CONFIG.formEndpoint, { method: "POST", body: data, mode: "no-cors" });
+        form.classList.add("is-sent");
+        say("Sent. If you hear nothing in a couple of days, email us below.", "ok");
+      } catch {
+        submit.disabled = false;
+        say("That didn't send. Please email us using the link below.", "bad");
+      }
+    }
+  });
 }
 
 /* ── 1b. events timeline ─────────────────────────────────

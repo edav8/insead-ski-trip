@@ -164,13 +164,13 @@
       </article>
       <article class="wcard" role="listitem" style="--k:3">
         <span class="wcard__day">Fri</span>
-        <h3>Summit day + gala</h3>
+        <h3>Gala night</h3>
         <p>Top-station photo with the whole cohort, then the closing night. Dress code: questionable.</p>
       </article>
       <article class="wcard" role="listitem" style="--k:4">
-        <span class="wcard__day">Sat</span>
-        <h3>The long drive back</h3>
-        <p>Silence, sunburn, and a group chat that will not recover for months.</p>
+        <span class="wcard__day">Sat night</span>
+        <h3>The overnight coach</h3>
+        <p>Last runs Saturday, then the night coach home. Fontainebleau by Sunday breakfast, with sunburn and a group chat that will not recover for months.</p>
       </article>
     </div>
   </div>
@@ -223,7 +223,7 @@
         <h3>Early bird</h3>
         <p class="tier__price"><span data-cfg="priceEarly"></span></p>
         <p class="tier__when">Until <span data-cfg="earlyDeadline"></span></p>
-        <ul><li>Coach return</li><li>7 nights, shared room</li><li>6-day lift pass</li><li>Half board</li></ul>
+        <ul><li>Coach both ways</li><li>Up to 7 nights, shared room</li><li>Lift pass for your days</li><li>Half board</li></ul>
       </div>
       <div class="tier tier--hot flow" style="--k:1">
         <span class="tier__flag">Most taken</span>
@@ -233,15 +233,15 @@
         <ul><li>Everything in Early bird</li><li>Group ski lessons</li><li>Gala night</li><li>Après programme</li></ul>
       </div>
       <div class="tier flow" style="--k:2">
-        <h3>Gear add-on</h3>
-        <p class="tier__price"><span data-cfg="priceGear"></span></p>
-        <p class="tier__when">Optional</p>
-        <ul><li>Skis or board + boots</li><li>Helmet</li><li>Poles</li><li>Swap-outs on site</li></ul>
+        <h3>Equipment rental</h3>
+        <p class="tier__price">from <span data-cfg="priceGear"></span></p>
+        <p class="tier__when">Optional — Bronze, Silver or Gold</p>
+        <ul><li>Skis or board, boots, poles</li><li>Three grades; pick on the form</li><li>Helmet included</li><li>Swap-outs on site</li></ul>
       </div>
     </div>
     <p class="finePrint flow">
-      Indicative pricing, per person. Flights not included. Final figures confirmed with the
-      operator before deposits open.
+      Per person, for the full week from Sat 2 Jan. Shorter stays are priced by the
+      operator once the committee has the day counts — which is what the form is for.
     </p>
   </div>
 </section>
@@ -272,9 +272,79 @@
 <section class="sec signup" id="signup" data-glow>
   <div class="wrap wrap--narrow">
     <p class="eyebrow flow">07 — Get on the list</p>
-    <h2 class="h2 flow">Register interest.</h2>
-    <p class="lede flow">No payment, no commitment. It takes thirty seconds and it decides whether this happens.</p>
-    <a class="btn btn--lg btn--block flow" id="signupBtn" href="#" target="_blank" rel="noopener">Open the interest form</a>
+    <h2 class="h2 flow">Tell us your days.</h2>
+    <p class="lede flow">
+      No payment yet — but this is not a poll. The committee books beds and coach
+      seats on what you put here, so fill it in only if you are genuinely planning to come.
+      What we most need to know is <strong>which day you'd arrive</strong>.
+    </p>
+
+    <form class="form flow" id="interestForm" novalidate>
+      <div class="field">
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required
+               maxlength="80" placeholder="First and last">
+        <p class="field__err" data-err-for="f-name"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required
+               maxlength="120" inputmode="email" placeholder="you@insead.edu">
+        <p class="field__err" data-err-for="f-email"></p>
+      </div>
+
+      <!-- The question the whole form exists for -->
+      <fieldset class="field field--key" id="f-arrival">
+        <legend>Which day would you arrive?</legend>
+        <div class="days" id="dayPicker" role="radiogroup" aria-describedby="arrivalHint"></div>
+        <p class="field__hint" id="arrivalHint"></p>
+        <p class="field__err" data-err-for="f-arrival"></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="f-transport">Transport</label>
+        <select id="f-transport" name="transport" required></select>
+        <p class="field__err" data-err-for="f-transport"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-material">Equipment rental</label>
+        <select id="f-material" name="material" required></select>
+        <p class="field__err" data-err-for="f-material"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-note">Anything else <span class="opt">optional</span></label>
+        <textarea id="f-note" name="note" rows="2" maxlength="600"
+                  placeholder="Bringing someone, dietary needs, questions…"></textarea>
+      </div>
+
+      <div class="field field--serious">
+        <label class="check check--serious">
+          <input type="checkbox" name="serious" id="f-serious" value="yes" required>
+          <span>I'm seriously considering coming. This isn't a maybe — the committee
+          will book beds and coaches on these numbers.</span>
+        </label>
+        <p class="field__err" data-err-for="f-serious"></p>
+      </div>
+
+      <!-- Honeypot: a real person never fills this, bots do. Kept out of the
+           accessibility tree AND out of the tab order, not just hidden. -->
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Website</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button class="btn btn--lg btn--block" type="submit" id="formSubmit">Count me in</button>
+
+      <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+      <p class="form__privacy">
+        Goes to the student committee only, to count heads and hold beds.
+        Not shared with anyone else, and not a booking.
+      </p>
+    </form>
+
     <p class="finePrint flow">Questions: <a id="mailLink" href="#"><span data-cfg="contactEmail"></span></a></p>
   </div>
 </section>
