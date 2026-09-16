@@ -50,7 +50,11 @@ const CONFIG = {
     action:  "",                           // https://docs.google.com/forms/d/e/<id>/formResponse
     entries: { name:"", email:"", arrival:"", transport:"", material:"", note:"", serious:"" },
   },
-  signupUrl:    "",                        // external form, if you'd rather link out
+  // The real sign-up is a Google Form (20 questions, answers land in a
+  // spreadsheet). When this is set the page shows a button to it instead of
+  // the built-in form — the built-in one asks five questions and could never
+  // satisfy the Google Form's required fields.
+  signupUrl:    "https://docs.google.com/forms/d/e/1FAIpQLSfq7oycp_TVuuylYJvATYIUuYnH7aR2vCKAcqZcgtB6PWYc2A/viewform",
   contactEmail: "elisabeth.vandehout@insead.edu",
 
   // ── arrival options ────────────────────────────────────────────
@@ -197,10 +201,26 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
    matter: JSON would trigger a CORS preflight that Apps Script does not
    answer, and Apps Script does not parse multipart bodies into
    e.parameter at all — a multipart POST lands as an empty row. */
-{
+(() => {
   const form   = $("#interestForm");
   const status = $("#formStatus");
   const submit = $("#formSubmit");
+
+  // Hand over to the Google Form if one is configured.
+  if (CONFIG.signupUrl) {
+    const a = document.createElement("a");
+    a.className = "btn btn--lg btn--block";
+    a.href = CONFIG.signupUrl;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Open the sign-up form";
+    const note = document.createElement("p");
+    note.className = "form__privacy";
+    note.textContent = "Opens the MIM28 sign-up form. It asks about your days, " +
+      "transport, equipment and ski level, and takes about two minutes.";
+    form.replaceWith(a, note);
+    return;
+  }
 
   // Selects are built from CONFIG so the form can never offer a day or a
   // rental grade the rest of the page does not describe.
@@ -363,7 +383,7 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
       }
     }
   });
-}
+})();
 
 /* ── 1b. events timeline ─────────────────────────────────
    Status is derived from the date rather than stored, so the list stays
