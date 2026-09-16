@@ -1,4 +1,4 @@
-/**
+ o/**
  * INSEAD Ski — interest form backend
  *
  * Appends one row per submission to the spreadsheet this script is bound to.

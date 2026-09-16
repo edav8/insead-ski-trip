@@ -194,7 +194,7 @@ a{ color:inherit }
   /* capped by viewport height too: three lines of display type is the
      tallest block in the hero, and a width-only clamp pushed the CTA
      off the bottom of an 800px laptop screen */
-  font-size:min(clamp(3.1rem,12vw,9.5rem),13vh);
+  font-size:min(clamp(3.1rem,12vw,9.5rem),12vh);
   line-height:.86; letter-spacing:-.015em;
   margin:0 0 clamp(.7rem,2vh,1.6rem); text-transform:uppercase;
 }
@@ -416,6 +416,13 @@ a{ color:inherit }
 .finePrint{ font-size:.78rem; color:var(--muted); max-width:60ch }
 .finePrint a{ color:var(--accent) }
 
+.hero__price{
+  margin:0 0 clamp(1rem,2.4vh,1.8rem); font-size:clamp(1.05rem,.5vw + 1rem,1.3rem);
+  font-weight:600; color:var(--ink);
+}
+.hero__price em{ display:block; margin-top:.3rem; font-style:normal;
+  font-size:.78rem; font-weight:400; letter-spacing:.02em; color:var(--muted) }
+
 /* faq */
 .qa{ border-top:1px solid var(--line); padding:.35rem 0 }
 .qa:last-of-type{ border-bottom:1px solid var(--line) }
@@ -575,8 +582,27 @@ fieldset.field{ border:0; padding:0; margin:0 0 1.1rem; min-width:0 }
 
 /* Short phones in landscape, and small phones generally: the hero
    headline is the only thing big enough to sacrifice. */
+/* A 13" laptop is 800px tall and is the single most common desktop size
+   here. Adding the price line cost the hero 55px and pushed the CTA below
+   the fold, so the headline gives it back: 11vh instead of 13vh is ~41px
+   across three lines, which is cheaper than losing the price or the CTA. */
+@media (max-height:850px){
+  .hero__title{ font-size:min(clamp(3.1rem,12vw,9.5rem),11vh) }
+  .hero__price{ font-size:1.05rem; margin-bottom:1rem }
+  .hero__price em{ font-size:.73rem }
+}
+
 @media (max-height:760px){
   .hero__logo{ width:min(clamp(120px,18vw,180px),22vh) }
+  .hero__price{ font-size:1rem; margin-bottom:.9rem }
+  .hero__price em{ font-size:.72rem }
+}
+/* The price range is repeated on every day card and across the price
+   section, so it is the cheapest line to drop once the fold gets tight —
+   and at 667px tall the hero was clearing it by under 2px, which is a
+   coincidence rather than a margin. */
+@media (max-height:700px){
+  .hero__price{ display:none }
   .hero__sub{ font-size:.92rem }
   .count__unit{ padding:.5rem .4rem .4rem }
   .scrollcue{ display:none }

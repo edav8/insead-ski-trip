@@ -92,6 +92,11 @@
         <div class="count__unit"><b id="c-s">—</b><span>sec</span></div>
       </div>
 
+      <p class="hero__price">
+        <span data-cfg="priceFrom"></span>–<span data-cfg="priceTo"></span>
+        <em data-cfg="priceNote"></em>
+      </p>
+
       <div class="hero__cta">
         <a class="btn btn--lg" href="#signup">Register interest</a>
         <a class="btn btn--ghost btn--lg" href="#what">What is this?</a>
@@ -148,9 +153,9 @@
 
     <div class="track" id="weekTrack" role="list">
       <article class="wcard" role="listitem" style="--k:0">
-        <span class="wcard__day">Sat</span>
+        <span class="wcard__day">Night one</span>
         <h3>Coaches roll out</h3>
-        <p>Fontainebleau at dawn, Alps by evening. Sleep on the bus — you will need it.</p>
+        <p>Fontainebleau in the evening, Alps by morning. You sleep on the coach, so it never costs you a night in the apartment.</p>
       </article>
       <article class="wcard" role="listitem" style="--k:1">
         <span class="wcard__day">Sun</span>
@@ -168,9 +173,9 @@
         <p>Top-station photo with the whole cohort, then the closing night. Dress code: questionable.</p>
       </article>
       <article class="wcard" role="listitem" style="--k:4">
-        <span class="wcard__day">Sat night</span>
-        <h3>The overnight coach</h3>
-        <p>Last runs Saturday, then the night coach home. Fontainebleau by Sunday breakfast, with sunburn and a group chat that will not recover for months.</p>
+        <span class="wcard__day">Sat 9</span>
+        <h3>The drive home</h3>
+        <p>Check out by ten, coach in the afternoon, Fontainebleau by Saturday evening — with sunburn and a group chat that will not recover for months.</p>
       </article>
     </div>
   </div>
@@ -186,8 +191,8 @@
     <p class="eyebrow flow">03 — The calendar</p>
     <h2 class="h2 flow">Hour by hour, more or less.</h2>
     <p class="lede flow">
-      A working draft of the week. Lifts open at 09:00 and close at 16:30;
-      everything else moves with the weather.
+      The shape is the same whichever length you pick — only your arrival changes.
+      Everyone skis until Friday 8 Jan and travels home on Saturday the 9th.
     </p>
     <div class="cal" id="calList"></div>
     <p class="finePrint flow">
@@ -217,31 +222,18 @@
   <div class="wrap">
     <p class="eyebrow flow">05 — The damage</p>
     <h2 class="h2 flow">What it costs.</h2>
+    <p class="lede flow">
+      Per person, all in: return coach, apartment at <span data-cfg="residence"></span>,
+      lift pass and ECO ski rental for every ski day, and all-inclusive insurance.
+      The price only depends on how many days you come for.
+    </p>
 
-    <div class="tiers">
-      <div class="tier flow" style="--k:0">
-        <h3>Early bird</h3>
-        <p class="tier__price"><span data-cfg="priceEarly"></span></p>
-        <p class="tier__when">Until <span data-cfg="earlyDeadline"></span></p>
-        <ul><li>Coach both ways</li><li>Up to 7 nights, shared room</li><li>Lift pass for your days</li><li>Half board</li></ul>
-      </div>
-      <div class="tier tier--hot flow" style="--k:1">
-        <span class="tier__flag">Most taken</span>
-        <h3>Standard</h3>
-        <p class="tier__price"><span data-cfg="priceStd"></span></p>
-        <p class="tier__when">Until spots run out</p>
-        <ul><li>Everything in Early bird</li><li>Group ski lessons</li><li>Gala night</li><li>Après programme</li></ul>
-      </div>
-      <div class="tier flow" style="--k:2">
-        <h3>Equipment rental</h3>
-        <p class="tier__price">from <span data-cfg="priceGear"></span></p>
-        <p class="tier__when">Optional — Bronze, Silver or Gold</p>
-        <ul><li>Skis or board, boots, poles</li><li>Three grades; pick on the form</li><li>Helmet included</li><li>Swap-outs on site</li></ul>
-      </div>
+    <div class="tiers" id="tierList"></div>
     </div>
     <p class="finePrint flow">
-      Per person, for the full week from Sat 2 Jan. Shorter stays are priced by the
-      operator once the committee has the day counts — which is what the form is for.
+      €519 and €619 are the prices Yoonly has quoted in writing. €599 and €719 are the
+      committee's own estimates for lengths Yoonly has not priced yet — shown so you can
+      choose, not as an offer. Excludes tourist tax (€1.10 per night) and a €25 helmet.
     </p>
   </div>
 </section>
