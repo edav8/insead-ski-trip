@@ -8,7 +8,38 @@ instead — so the page is never broken.
 Two ways to get a spreadsheet. The first gives you a Google Sheet you own;
 the second is a few clicks faster but caps free submissions.
 
-## Option A — Google Sheet (recommended: your data, no limits, free)
+## Option A — a Google Form (recommended: no code, ~3 minutes)
+
+The site's own form stays exactly as it looks; behind the scenes it posts each
+answer into a Google Form you own. You never see the Google Form — it is just
+the bucket. Responses show in its **Responses** tab, and **Link to Sheets**
+gives you a spreadsheet that updates live and downloads as Excel.
+
+1. Go to [forms.new](https://forms.new). Name it `INSEAD Ski – interest`.
+2. Add these **seven** questions, all of type **Short answer** (the last one
+   can be **Paragraph**). The titles don't matter; the order and type do:
+   1. Name
+   2. Email
+   3. Arrival day
+   4. Transport
+   5. Equipment rental
+   6. Serious
+   7. Anything else *(Paragraph)*
+3. Settings → **Responses** → make sure **"Limit to 1 response"** and
+   **"Collect email addresses"** are both **off** — either one forces a Google
+   sign-in, which blocks the site from posting.
+4. Click **Send** → the link icon → copy the link. Send that link to whoever
+   maintains this repo. They read the form's field ids off the page and fill
+   `googleForm.action` and `googleForm.entries` in `script.js`. Nothing else
+   changes.
+5. In the Form, **Responses → Link to Sheets** — that's your live spreadsheet.
+   **File → Download → Microsoft Excel** whenever you want the .xlsx.
+
+Google Forms won't confirm receipt to the site (it blocks cross-origin
+replies), so the site says "Thanks — you're on the list" once the post is sent.
+Submit once yourself to see the row appear.
+
+## Option B — Google Sheet + Apps Script (your data, no limits, but more steps)
 
 Every submission becomes a row. **File → Download → Microsoft Excel** whenever
 you want the .xlsx.
@@ -42,7 +73,7 @@ changing — the script adds a column for any new field it sees.
 version** for the change to go live. Saving alone is not enough; this is the
 single most common reason an Apps Script "stops working".
 
-## Option B — Formspree (fastest; 50 free submissions a month)
+## Option C — Formspree (50 free submissions a month)
 
 1. Sign up at [formspree.io](https://formspree.io), create a form, copy the
    endpoint (`https://formspree.io/f/xxxxxxxx`).

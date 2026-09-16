@@ -40,6 +40,14 @@ const CONFIG = {
   // works — it falls back to opening a pre-filled email instead, so the
   // page is never broken while this is being arranged.
   formEndpoint: "",
+  // OR: a plain Google Form. Create one with short-answer questions, send the
+  // link to whoever maintains this, and they fill `action` and the entry ids
+  // (see SETUP-FORM.md, Option A). Answers land in the Form's Responses tab
+  // and its linked Sheet. Takes precedence over formEndpoint when set.
+  googleForm: {
+    action:  "",                           // https://docs.google.com/forms/d/e/<id>/formResponse
+    entries: { name:"", email:"", arrival:"", transport:"", material:"", note:"", serious:"" },
+  },
   signupUrl:    "",                        // external form, if you'd rather link out
   contactEmail: "elisabeth.vandehout@insead.edu",
 
@@ -284,6 +292,28 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
     data.set("serious", "yes");
     data.append("submitted_at", new Date().toISOString());
     data.append("trip", `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.datesLong}`);
+
+    const gf = CONFIG.googleForm;
+    if (gf && gf.action) {
+      // Google Forms accepts a cross-origin POST to /formResponse but never
+      // lets the browser read the reply, so this is fire-and-forget by
+      // design. The row lands in the Form's Responses tab.
+      const body = new FormData();
+      for (const [field, entry] of Object.entries(gf.entries)) {
+        if (entry && data.has(field)) body.append(entry, data.get(field));
+      }
+      submit.disabled = true;
+      say("Sending…", "busy");
+      try {
+        await fetch(gf.action, { method: "POST", body, mode: "no-cors" });
+        form.classList.add("is-sent");
+        say("Thanks — you're on the list. The committee will be in touch.", "ok");
+      } catch {
+        submit.disabled = false;
+        say("That didn't send. Please email us using the link below.", "bad");
+      }
+      return;
+    }
 
     if (!CONFIG.formEndpoint) {
       // No backend wired up yet: hand the answers to the mail client so
