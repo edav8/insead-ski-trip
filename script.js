@@ -184,10 +184,12 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
 /* ── 1a. the interest form ───────────────────────────────
    Static hosting has no server, so submissions go to whatever endpoint
    CONFIG.formEndpoint names (Google Apps Script, Formspree, Microsoft
-   Power Automate — all accept the same FormData POST). Sent as FormData
-   rather than JSON deliberately: it is a "simple request", so the
-   browser skips the CORS preflight that several of those backends do
-   not answer. */
+   Power Automate).
+
+   Sent url-encoded, NOT as multipart FormData and NOT as JSON. All three
+   matter: JSON would trigger a CORS preflight that Apps Script does not
+   answer, and Apps Script does not parse multipart bodies into
+   e.parameter at all — a multipart POST lands as an empty row. */
 {
   const form   = $("#interestForm");
   const status = $("#formStatus");
@@ -298,7 +300,7 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
       // Google Forms accepts a cross-origin POST to /formResponse but never
       // lets the browser read the reply, so this is fire-and-forget by
       // design. The row lands in the Form's Responses tab.
-      const body = new FormData();
+      const body = new URLSearchParams();
       for (const [field, entry] of Object.entries(gf.entries)) {
         if (entry && data.has(field)) body.append(entry, data.get(field));
       }
@@ -328,7 +330,8 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
     say("Sending…", "busy");
     try {
       const res = await fetch(CONFIG.formEndpoint, {
-        method: "POST", body: data, headers: { Accept: "application/json" },
+        method: "POST", body: new URLSearchParams(data),
+        headers: { Accept: "application/json" },
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       form.classList.add("is-sent");
@@ -338,7 +341,8 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
       // reply. Retry opaquely: the row still lands, we just cannot
       // confirm it, so say exactly that rather than claiming success.
       try {
-        await fetch(CONFIG.formEndpoint, { method: "POST", body: data, mode: "no-cors" });
+        await fetch(CONFIG.formEndpoint, {
+          method: "POST", body: new URLSearchParams(data), mode: "no-cors" });
         form.classList.add("is-sent");
         say("Sent. If you hear nothing in a couple of days, email us below.", "ok");
       } catch {
