@@ -3,8 +3,9 @@
 
    ┌───────────────────────────────────────────────────────────────┐
    │  EDIT ONLY THIS BLOCK.  Everything on the page reads from it. │
-   │  All values below are PLACEHOLDERS — nothing here is          │
-   │  confirmed. Swap them for the real trip details.              │
+   │  BOOKED: Alice signed Yoonly contract 15610 on 14 Oct 2026 —  │
+   │  Les Ménuires, 4 days from 04.01.27, €609 pp. This page is no │
+   │  longer a poll; it announces a trip that exists.              │
    └───────────────────────────────────────────────────────────────┘
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -13,30 +14,32 @@ const CONFIG = {
   cohort:     "MIM28",
   yearShort:  "28",                        // shown after the wordmark
   resort:     "Les Menuires",
-  country:    "French Alps",               // PLACEHOLDER
+  country:    "French Alps",
   altitude:   "1,850 m",                   // Les Menuires village
   residence:  "Résidence Adonis",          // per the contracts (the 2023 brochure says Les Lys — unconfirmed)
   domain:     "3 Vallées",
 
   // ── dates ──────────────────────────────────────────────────────
   // startISO drives the countdown. Local time, 24h, with UTC offset.
-  startISO:   "2027-01-02T18:00:00+01:00", // earliest coach departure (6-night option)
-  datesLong:  "2 – 9 January 2027",
+  startISO:   "2027-01-04T20:00:00+01:00", // the coach leaves Fontainebleau Monday evening
+  datesLong:  "4 – 10 January 2027",
 
   // ── scale ──────────────────────────────────────────────────────
-  statPeople: "120+",                      // PLACEHOLDER
-  statKm:     "600 km",                    // PLACEHOLDER
-  statLifts:  "160",                       // PLACEHOLDER
-  statNights: "7",                         // PLACEHOLDER
+  statPeople: "118",                       // sign-ups in the form, 22 Sep
+  statKm:     "500 km",                    // Yoonly's own figure for the 3 Vallées
+  statLifts:  "4",                         // ski days in the signed contract
+  statNights: "1,850 m",                   // Les Menuires village altitude
 
   // ── money ──────────────────────────────────────────────────────
-  // Cheapest and dearest of the four lengths, for the headline.
-  priceFrom:     "€519",
-  priceTo:       "€719",
-  priceNote:     "per person, coach + apartment + lift pass + ski rental + insurance",
+  // €569 is the Yoonly contract price; the +€40 is the committee's own
+  // buffer for parties, restaurants and drinks, not an operator line item.
+  price:         "€609",
+  priceNote:     "per person, all in — coach, apartment, lift pass, ski rental and insurance",
+  priceBase:     569,
+  priceBuffer:   40,
 
   // ── calls to action ────────────────────────────────────────────
-  spotsNote:    "Nothing is confirmed yet — this page exists to count hands.",
+  spotsNote:    "Booked. Contract signed 14 October — this is happening.",
   // Where the on-page form POSTs. Paste the URL from whichever backend
   // you set up (see SETUP-FORM.md). Leave it empty and the form still
   // works — it falls back to opening a pre-filled email instead, so the
@@ -57,94 +60,69 @@ const CONFIG = {
   signupUrl:    "https://docs.google.com/forms/d/e/1FAIpQLSfq7oycp_TVuuylYJvATYIUuYnH7aR2vCKAcqZcgtB6PWYc2A/viewform",
   contactEmail: "elisabeth.vandehout@insead.edu",
 
-  // ── arrival options ────────────────────────────────────────────
-  // The whole point of the form: everyone LEAVES together, but people
-  // join on different days, so the only variable is the arrival date.
-  // `nights` is counted to the morning of Sun 10 Jan.
-  // Straight off the Yoonly contracts. Nights == ski days at every length:
-  // the coach travels overnight, so the coach night is never a hotel night,
-  // and the last ski day is always Friday 8 Jan whichever option you pick.
-  // `quoted` = a price printed in a contract. `estimated` = interpolated,
-  // NOT an offer — 4 and 6 nights have never been quoted by Yoonly.
-  arrivalDates: [
-    { value: "2027-01-02", label: "Sat 2 Jan", nights: 6, ski: "Sun 3 – Fri 8",
-      price: 719, quoted: false, range: "€669–759" },
-    { value: "2027-01-03", label: "Sun 3 Jan", nights: 5, ski: "Mon 4 – Fri 8",
-      price: 619, quoted: true },
-    { value: "2027-01-04", label: "Mon 4 Jan", nights: 4, ski: "Tue 5 – Fri 8",
-      price: 599, quoted: false, range: "€569–619" },
-    { value: "2027-01-05", label: "Tue 5 Jan", nights: 3, ski: "Wed 6 – Fri 8",
-      price: 519, quoted: true },
-  ],
-  returnNote: "Whichever you pick, the coach leaves Fontainebleau that evening " +
-              "and you ski from the next morning. Everyone skis until Friday 8 Jan, " +
-              "checks out Saturday morning and is back in Fontainebleau on " +
-              "Saturday 9 Jan evening.",
-
-  // Rental grades as the shop quotes them. Platinum is deliberately not
-  // offered — it is race kit nobody on this trip needs.
-  // ECO is bundled into every price. ARGENT/OR are the contract's own grade
-  // names and supplements; the € shown is the 5-night figure, which is the
-  // ceiling — shorter stays cost less. Snowboards only exist from ARGENT up.
-  materialOptions: [
-    "ECO skis + boots — included",
-    "ARGENT — better skis or a snowboard (+€48)",
-    "OR — top-range skis or snowboard (+€74)",
-    "I'll bring my own skis (saves ~€12)",
-  ],
-  transportOptions: [
-    "Coach both ways — included",
-    "Making my own way (−€100)",
-    "Not sure yet",
-  ],
+  // ── the trip, as signed ────────────────────────────────────────
+  // Yoonly contract 15610, "Les Ménuires 4J - 04.01.27", signed 14 Oct 2026.
+  // The coach runs overnight, so a travel night is never a night in the
+  // apartment. What the Saturday holds is NOT established in writing
+  // anywhere this repo can see: the townhall deck says "through Saturday
+  // night", the earlier 5J/3J contracts put the coach home on Saturday
+  // daytime, and 15610 itself is only in WhatsApp. Said out loud on the
+  // page rather than guessed at.
+  trip: {
+    depart:  "Mon 4 Jan, evening",
+    arrive:  "Tue 5 Jan, morning",
+    ski:     "Tue 5 – Fri 8 Jan",
+    home:    "Sun 10 Jan, morning",
+    skiDays: 4,
+    nights:  4,
+  },
+  saturdayUnconfirmed: true,
+  returnNote: "The coach leaves Fontainebleau Monday evening and you ski " +
+              "from Tuesday morning. Back in Fontainebleau Sunday the 10th.",
 
   // ── run-up events ──────────────────────────────────────────────
   // ISO dates. Anything in the past dims itself and the next one up is
   // marked automatically, so this list never needs pruning by hand.
   events: [
-    { date:"2026-10-08", title:"Info session",
-      where:"Fontainebleau campus",
-      note:"What the trip is, what it costs, and who is running it. Come with questions." },
-    { date:"2026-10-31", title:"Early-bird closes",
+    { date:"2026-09-23", title:"Les Menuires held", done:true,
       where:"",
-      note:"Deposit in by tonight to hold the lower price." },
-    { date:"2026-11-19", title:"Gear & kit night",
-      where:"Fontainebleau campus",
-      note:"Rental sizing, what to pack, and what not to buy new." },
-    { date:"2026-12-04", title:"Balance due",
+      note:"Alice: \"For sure we have the Menuires accommodation.\" The residence was reserved for us." },
+    { date:"2026-10-13", title:"Final contract circulated", done:true,
+      where:"Ski trip organization",
+      note:"Contrat 15610 — Les Ménuires 4J — posted at 17:42 for the committee to read." },
+    { date:"2026-10-14", title:"Contract signed", done:true,
       where:"",
-      note:"Remaining payment. Spots not paid by this date go to the waiting list." },
-    { date:"2026-12-11", title:"Rooming groups posted",
+      note:"Alice: \"contract is signed !!!!\" — Les Ménuires, 4 days from 4 Jan, €609 per person." },
+    { date:"2026-10-21", title:"How you pay — to be announced",
       where:"",
-      note:"Chalets and roommates confirmed. Swaps handled by the committee after this." },
-    { date:"2027-01-02", title:"Coaches leave",
-      where:"Fontainebleau, 06:00",
-      note:"Be early. They will not wait." },
+      note:"The collection route is not decided yet. Nothing to do until the committee says how." },
+    { date:"2027-01-04", title:"Coach leaves Fontainebleau",
+      where:"Fontainebleau, Monday evening",
+      note:"Overnight to the Alps. Be early — it will not wait." },
   ],
 
   // ── the week itself ────────────────────────────────────────────
   schedule: [
-    { day:"Your travel night", tag:"Overnight coach", items:[
-      {t:"Evening", w:"Coach leaves Fontainebleau — Sat 2, Sun 3, Mon 4 or Tue 5 Jan, depending on the length you pick"},
-      {t:"Overnight", w:"You sleep on the coach; it is not one of your nights in the apartment"},
-      {t:"Morning", w:"Arrive Les Menuires. Keys, lift pass and skis the same morning"} ]},
-    { day:"Your first day", tag:"Straight onto the snow", items:[
-      {t:"Morning", w:"Check in at Résidence Adonis, collect pass and ECO rental"},
-      {t:"09:00", w:"Lifts open — the 3 Vallées, 600 km of piste"},
+    { day:"Mon 4 Jan", tag:"Overnight coach", items:[
+      {t:"Evening", w:"Coach leaves Fontainebleau — exact time from Yoonly nearer the date"},
+      {t:"Overnight", w:"You sleep on the coach. It is not one of your four nights in the apartment"} ]},
+    { day:"Tue 5 Jan", tag:"Straight onto the snow", items:[
+      {t:"Morning", w:"Arrive Les Menuires. Keys, lift pass and skis the same morning"},
+      {t:"09:00", w:"Lifts open — the 3 Vallées, the largest linked ski area in the world"},
       {t:"16:30", w:"Lifts close. Après at Le Puff Daddy on the snow front"},
       {t:"Evening", w:"Welcome pack: breakfast, a welcome drink and a barbecue sandwich"} ]},
-    { day:"Every full day", tag:"Ski · eat · repeat", items:[
+    { day:"Wed 6 – Thu 7 Jan", tag:"Full days", items:[
       {t:"09:00", w:"Full days on the snow, beginners through advanced"},
       {t:"16:30", w:"Après-ski — one 30L keg per 60 people"},
-      {t:"Evening", w:"Themed nights, priority club entry, pool and ice rink on rest days"} ]},
-    { day:"Fri 8 Jan", tag:"Last ski day — everyone", items:[
-      {t:"09:00", w:"Final day on the snow, whichever length you booked"},
+      {t:"Evening", w:"Themed nights, pool and ice rink on a rest day"} ]},
+    { day:"Fri 8 Jan", tag:"Last ski day", items:[
+      {t:"09:00", w:"Fourth and final day on the snow"},
       {t:"16:30", w:"Lifts close, rental gear goes back"},
       {t:"Evening", w:"Closing night"} ]},
-    { day:"Sat 9 Jan", tag:"Home", items:[
-      {t:"08:00", w:"Check out of the apartment by 10:00 — no skiing today"},
-      {t:"Daytime", w:"Coach leaves Les Menuires"},
-      {t:"Evening", w:"Back in Fontainebleau"} ]},
+    { day:"Sat 9 – Sun 10 Jan", tag:"Home", items:[
+      {t:"Saturday", w:"Check out of the apartment. What the rest of Saturday holds is not confirmed yet"},
+      {t:"Overnight", w:"Coach back to Fontainebleau"},
+      {t:"Sun morning", w:"Back at Fontainebleau"} ]},
   ],
 
   // ── hero footage ───────────────────────────────────────────────
@@ -397,7 +375,9 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
   for (const [i, e] of (CONFIG.events || []).entries()) {
     const d = new Date(e.date + "T00:00:00");
     if (Number.isNaN(d.getTime())) continue;
-    const past = d < today;
+    // `done` wins over the date: something that happened earlier today is
+    // finished, but `d < today` is false for it and it would read "Next up".
+    const past = e.done === true || d < today;
     const isNext = !past && !nextMarked;
     if (isNext) nextMarked = true;
 
@@ -420,22 +400,45 @@ document.title = `INSEAD Ski ${CONFIG.yearShort} — ${CONFIG.cohort}`;
   }
 }
 
-/* ── 1b2. price tiers, from the same array as the day picker ── */
+/* ── 1b2. the price, now that it is one number ───────────── */
 {
   const wrap = $("#tierList");
-  if (wrap) wrap.innerHTML = CONFIG.arrivalDates.map(d => `
-    <div class="tier flow${d.quoted ? " tier--hot" : ""}">
-      ${d.quoted ? '<span class="tier__flag">Quoted</span>' : ""}
-      <h3>${d.nights} days</h3>
-      <p class="tier__price">€${d.price}</p>
-      <p class="tier__when">${d.quoted ? "Confirmed by Yoonly" : `Estimate · ${d.range}`}</p>
+  const t = CONFIG.trip;
+  if (wrap) wrap.innerHTML = `
+    <div class="tier tier--hot flow">
+      <span class="tier__flag">Signed</span>
+      <h3>The price</h3>
+      <p class="tier__price">${CONFIG.price}</p>
+      <p class="tier__when">Per person, all in</p>
       <ul>
-        <li>Coach leaves ${d.label} evening</li>
-        <li>Ski ${d.ski}</li>
-        <li>${d.nights} nights at ${CONFIG.residence}</li>
-        <li>${d.nights}-day ${CONFIG.domain} pass + rental</li>
+        <li>€${CONFIG.priceBase} — the Yoonly contract</li>
+        <li>€${CONFIG.priceBuffer} — committee buffer</li>
+        <li>Parties, restaurants, drinks</li>
+        <li>Announced earlier as €670</li>
       </ul>
-    </div>`).join("");
+    </div>
+    <div class="tier flow">
+      <h3>Included</h3>
+      <p class="tier__price">${t.skiDays} days</p>
+      <p class="tier__when">On the snow, ${t.ski}</p>
+      <ul>
+        <li>Return coach from Fontainebleau</li>
+        <li>${t.nights} nights at ${CONFIG.residence}</li>
+        <li>${t.skiDays}-day ${CONFIG.domain} lift pass</li>
+        <li>Ski or snowboard rental + insurance</li>
+      </ul>
+    </div>
+    <div class="tier flow">
+      <h3>On top</h3>
+      <p class="tier__price">€1.10</p>
+      <p class="tier__when">Tourist tax, per night</p>
+      <ul>
+        <li>Helmet, €25 if you want one</li>
+        <li>Meals and drinks</li>
+        <li>Rental above the Eco range</li>
+        <li>Anything you buy on the mountain</li>
+      </ul>
+    </div>`;
 }
 
 /* ── 1c. the week's calendar ─────────────────────────────── */

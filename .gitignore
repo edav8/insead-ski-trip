@@ -13,3 +13,6 @@ Icon?
 # local notes that shouldn't ship
 *.local
 /scratch/
+
+# scratch renders
+_*_tmp.html
